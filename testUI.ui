@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>884</width>
+    <height>737</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Παραγγελίες</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="7" column="0">
+     <widget class="QLabel" name="fromLabel">
+      <property name="font">
+       <font>
+        <family>Calibri</family>
+        <pointsize>12</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Από:</string>
+      </property>
+     </widget>
+    </item>
+    <item row="11" column="3">
+     <widget class="QPushButton" name="addItem">
+      <property name="text">
+       <string>Προσθήκη Προϊόντος</string>
+      </property>
+     </widget>
+    </item>
+    <item row="7" column="2">
+     <widget class="QLabel" name="toLabel">
+      <property name="font">
+       <font>
+        <family>Calibri</family>
+        <pointsize>12</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Προς:</string>
+      </property>
+     </widget>
+    </item>
+    <item row="8" column="3">
+     <widget class="QDateEdit" name="dateEdit"/>
+    </item>
+    <item row="11" column="2">
+     <widget class="QPushButton" name="deleteProduct">
+      <property name="text">
+       <string>Διαγραφή Προϊόντος</string>
+      </property>
+     </widget>
+    </item>
+    <item row="8" column="2">
+     <widget class="QComboBox" name="toSelector">
+      <item>
+       <property name="text">
+        <string>Item1</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Item2</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Item3</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>item4</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>item5</string>
+       </property>
+      </item>
+     </widget>
+    </item>
+    <item row="11" column="0">
+     <widget class="QPushButton" name="createOrder">
+      <property name="text">
+       <string>Δημιουργία Παραγγελίας</string>
+      </property>
+     </widget>
+    </item>
+    <item row="7" column="3">
+     <widget class="QLabel" name="date">
+      <property name="font">
+       <font>
+        <family>Calibri</family>
+        <pointsize>12</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Ημερομηνία:</string>
+      </property>
+     </widget>
+    </item>
+    <item row="8" column="0">
+     <widget class="QComboBox" name="fromSelector">
+      <item>
+       <property name="text">
+        <string>Item1</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Item2</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Item3</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>item4</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>item5</string>
+       </property>
+      </item>
+     </widget>
+    </item>
+    <item row="10" column="0" colspan="4">
+     <widget class="QTableWidget" name="OrderView">
+      <property name="focusPolicy">
+       <enum>Qt::WheelFocus</enum>
+      </property>
+      <property name="rowCount">
+       <number>10</number>
+      </property>
+      <property name="columnCount">
+       <number>3</number>
+      </property>
+      <attribute name="horizontalHeaderMinimumSectionSize">
+       <number>1</number>
+      </attribute>
+      <attribute name="horizontalHeaderStretchLastSection">
+       <bool>true</bool>
+      </attribute>
+      <attribute name="verticalHeaderMinimumSectionSize">
+       <number>0</number>
+      </attribute>
+      <attribute name="verticalHeaderStretchLastSection">
+       <bool>false</bool>
+      </attribute>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <column/>
+      <column/>
+      <column/>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>884</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menu">
+    <property name="title">
+     <string>Μενού</string>
+    </property>
+    <widget class="QMenu" name="administrator">
+     <property name="title">
+      <string>Διαχειριστής</string>
+     </property>
+     <addaction name="changeProducts"/>
+    </widget>
+    <addaction name="administrator"/>
+    <addaction name="exit"/>
+   </widget>
+   <addaction name="menu"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="changeProducts">
+   <property name="text">
+    <string>Αλλαγή Προϊόντων</string>
+   </property>
+  </action>
+  <action name="action_4">
+   <property name="text">
+    <string>Αλλαγή Κωδικού</string>
+   </property>
+  </action>
+  <action name="exit">
+   <property name="text">
+    <string>Έξοδος</string>
+   </property>
+  </action>
+ </widget>
+ <tabstops>
+  <tabstop>OrderView</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>

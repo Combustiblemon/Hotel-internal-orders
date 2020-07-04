@@ -1,0 +1,16 @@
+{
+    "python.linting.enabled": true,
+    "python.linting.pylintEnabled": false,
+    "python.linting.flake8Enabled": true,
+    "python.linting.pydocstyleEnabled": false,
+	"editor.tokenColorCustomizations": {
+	"textMateRules": [
+			  {
+	"scope": "meta.function-call.generic.python",
+	"settings": {
+	"foreground": "#07b1e0"
+				}
+			  }
+			]
+		  }
+}
