@@ -148,7 +148,7 @@
        <number>0</number>
       </property>
       <property name="columnCount">
-       <number>2</number>
+       <number>0</number>
       </property>
       <attribute name="horizontalHeaderHighlightSections">
        <bool>false</bool>
@@ -162,8 +162,6 @@
       <attribute name="verticalHeaderStretchLastSection">
        <bool>false</bool>
       </attribute>
-      <column/>
-      <column/>
      </widget>
     </item>
    </layout>
