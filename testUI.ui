@@ -137,39 +137,31 @@
      </widget>
     </item>
     <item row="10" column="0" colspan="4">
-     <widget class="QTableWidget" name="OrderView">
+     <widget class="QTableWidget" name="orderView">
       <property name="focusPolicy">
        <enum>Qt::WheelFocus</enum>
       </property>
+      <property name="sizeAdjustPolicy">
+       <enum>QAbstractScrollArea::AdjustToContents</enum>
+      </property>
       <property name="rowCount">
-       <number>10</number>
+       <number>0</number>
       </property>
       <property name="columnCount">
-       <number>3</number>
+       <number>2</number>
       </property>
-      <attribute name="horizontalHeaderMinimumSectionSize">
-       <number>1</number>
+      <attribute name="horizontalHeaderHighlightSections">
+       <bool>false</bool>
+      </attribute>
+      <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
+       <bool>false</bool>
       </attribute>
       <attribute name="horizontalHeaderStretchLastSection">
        <bool>true</bool>
       </attribute>
-      <attribute name="verticalHeaderMinimumSectionSize">
-       <number>0</number>
-      </attribute>
       <attribute name="verticalHeaderStretchLastSection">
        <bool>false</bool>
       </attribute>
-      <row/>
-      <row/>
-      <row/>
-      <row/>
-      <row/>
-      <row/>
-      <row/>
-      <row/>
-      <row/>
-      <row/>
-      <column/>
       <column/>
       <column/>
      </widget>
@@ -196,7 +188,6 @@
      <addaction name="changeProducts"/>
     </widget>
     <addaction name="administrator"/>
-    <addaction name="exit"/>
    </widget>
    <addaction name="menu"/>
   </widget>
@@ -218,7 +209,7 @@
   </action>
  </widget>
  <tabstops>
-  <tabstop>OrderView</tabstop>
+  <tabstop>orderView</tabstop>
  </tabstops>
  <resources/>
  <connections/>
