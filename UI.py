@@ -222,6 +222,3 @@ class ItemNumberInput(QtWidgets.QDialog):
              
     def accepted(self):
         return super().accepted()(self)
-    
-    def rejected(self):
-        print('rejected')
