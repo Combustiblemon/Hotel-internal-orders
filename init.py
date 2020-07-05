@@ -1,7 +1,7 @@
 """Doc."""
 from PyQt5 import QtWidgets
 from UI import MainWindow
-from openpyxl import Workbook, load_workbook
+from openpyxl import Workbook, load_workbook 
 import sys
 import json
 import io
@@ -15,20 +15,25 @@ sheet["B1"] = "world!"
 
 workbook.save(filename="./files/data/hello_world.xlsx") """
 
+# load the excel file containing all the items
 workbook = load_workbook(filename="./files/data/ProductList.xlsx")
-# print(workbook.sheetnames)
+
+# add all the individual sheets into one list
 sheets = []
 for sheet in workbook.worksheets:
     sheets.append(sheet)
-# print(workbook)
+
 
 # with open('dictionary', 'w', encoding="utf8") as file:
 #    json.dump(exDict, file, ensure_ascii=False)
+
+# import the dictionary from the .json file
 sectionDictionary = {}
-with open('dictionary', 'r', encoding="utf8") as file:
+with open('./files/data/dictionary.json', 'r', encoding="utf8") as file:
     sectionDictionary = json.load(file)
 #print(dictTest)
 
+# create sectionList from the dictionary
 sectionList = []
 for k in sectionDictionary.items():
     sectionList.append(k[0])
@@ -40,6 +45,7 @@ for k in sectionDictionary.items():
 
 # print(sheet.title)
 
+# setup the application
 app = QtWidgets.QApplication(sys.argv)
 window = MainWindow(sectionDictionary)
 window.show()
