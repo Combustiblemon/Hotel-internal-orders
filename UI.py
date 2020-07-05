@@ -3,6 +3,7 @@ from PyQt5 import QtWidgets, QtCore, uic
 from PyQt5.QtWidgets import QDialog, QMessageBox, QMainWindow, QWidget, QPushButton, QAction, QInputDialog, QLineEdit, QFileDialog
 from PyQt5.QtGui import QIcon
 from PyQt5.uic import uiparser
+from shutil import copyfile
 
 uiparser.WidgetStack.topIsLayoutWidget = lambda self: False
 
@@ -101,7 +102,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.adminPasswordChange.triggered.connect(self.ChangeAdminPassword)
            
     def ChangeProductList(self):
-        self.openFileNameDialog()
+        self.insertProductList()
         
     def ChangeAdminPassword(self):
         print('Password Changed')
@@ -127,11 +128,12 @@ class MainWindow(QtWidgets.QMainWindow):
         if fileName:
             print(fileName)
             
-    def openFileNameDialog(self):
+    def insertProductList(self):
         options = QFileDialog.Options()
         fileName, _ = QFileDialog.getOpenFileName(self, "Άνοιγμα λίστας", "", "Excel Files (*.xlsx);;All Files (*)", options=options)
         if fileName:
-            print(fileName)
+            dest = './files/data/ProductList.xlsx'
+            copyfile(fileName, dest)
     
     def closeEvent(self, event):
         close = QMessageBox()
