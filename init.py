@@ -19,11 +19,16 @@ workbook.save(filename="./files/data/hello_world.xlsx") """
 workbook = load_workbook(filename="./files/data/ProductList.xlsx")
 
 # add all the individual sheets into one list
-sheets = []
+""" sheets = []
 for sheet in workbook.worksheets:
-    sheets.append(sheet)
-
-
+    sheets.append(sheet) """
+productList = {}
+for sheet in workbook.sheetnames:
+    productList[sheet] = []
+    for row in workbook[sheet].iter_rows(values_only=True):
+        productList[sheet].append(row)
+# print(productList)
+# print(workbook.sheetnames)
 # with open('dictionary', 'w', encoding="utf8") as file:
 #    json.dump(exDict, file, ensure_ascii=False)
 
@@ -31,12 +36,13 @@ for sheet in workbook.worksheets:
 sectionDictionary = {}
 with open('./files/data/dictionary.json', 'r', encoding="utf8") as file:
     sectionDictionary = json.load(file)
-#print(dictTest)
+
+# print(sectionDictionary['Αποθήκη'])
 
 # create sectionList from the dictionary
-sectionList = []
+""" sectionList = []
 for k in sectionDictionary.items():
-    sectionList.append(k[0])
+    sectionList.append(k[0]) """
 #print(sectionList)
 #print(sectionDictionary['Κουζίνα'])
 # sheets = workbook['ΣΥΝΟΛΟ']
@@ -47,6 +53,6 @@ for k in sectionDictionary.items():
 
 # setup the application
 app = QtWidgets.QApplication(sys.argv)
-window = MainWindow(sectionDictionary)
+window = MainWindow(sectionDictionary, workbook)
 window.show()
-app.exec_()
+app.exec_() 
