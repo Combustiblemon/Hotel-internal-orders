@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>884</width>
-    <height>737</height>
+    <width>1056</width>
+    <height>897</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -24,7 +24,7 @@
        </font>
       </property>
       <property name="text">
-       <string>Από:</string>
+       <string>Από τμήμα:</string>
       </property>
      </widget>
     </item>
@@ -44,7 +44,7 @@
        </font>
       </property>
       <property name="text">
-       <string>Προς:</string>
+       <string>Προς τμήμα:</string>
       </property>
      </widget>
     </item>
@@ -52,40 +52,14 @@
      <widget class="QDateEdit" name="dateEdit"/>
     </item>
     <item row="11" column="2">
-     <widget class="QPushButton" name="deleteProduct">
+     <widget class="QPushButton" name="deleteItem">
       <property name="text">
        <string>Διαγραφή Προϊόντος</string>
       </property>
      </widget>
     </item>
     <item row="8" column="2">
-     <widget class="QComboBox" name="toSelector">
-      <item>
-       <property name="text">
-        <string>Item1</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Item2</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Item3</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>item4</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>item5</string>
-       </property>
-      </item>
-     </widget>
+     <widget class="QComboBox" name="toSelector"/>
     </item>
     <item row="11" column="0">
      <widget class="QPushButton" name="createOrder">
@@ -95,7 +69,7 @@
      </widget>
     </item>
     <item row="7" column="3">
-     <widget class="QLabel" name="date">
+     <widget class="QLabel" name="dateLabel">
       <property name="font">
        <font>
         <family>Calibri</family>
@@ -108,33 +82,7 @@
      </widget>
     </item>
     <item row="8" column="0">
-     <widget class="QComboBox" name="fromSelector">
-      <item>
-       <property name="text">
-        <string>Item1</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Item2</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Item3</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>item4</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>item5</string>
-       </property>
-      </item>
-     </widget>
+     <widget class="QComboBox" name="fromSelector"/>
     </item>
     <item row="10" column="0" colspan="4">
      <widget class="QTableWidget" name="orderView">
@@ -144,14 +92,20 @@
       <property name="sizeAdjustPolicy">
        <enum>QAbstractScrollArea::AdjustToContents</enum>
       </property>
+      <property name="alternatingRowColors">
+       <bool>true</bool>
+      </property>
       <property name="rowCount">
        <number>0</number>
       </property>
       <property name="columnCount">
-       <number>0</number>
+       <number>2</number>
       </property>
-      <attribute name="horizontalHeaderHighlightSections">
-       <bool>false</bool>
+      <attribute name="horizontalHeaderCascadingSectionResizes">
+       <bool>true</bool>
+      </attribute>
+      <attribute name="horizontalHeaderMinimumSectionSize">
+       <number>1</number>
       </attribute>
       <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
        <bool>false</bool>
@@ -159,9 +113,29 @@
       <attribute name="horizontalHeaderStretchLastSection">
        <bool>true</bool>
       </attribute>
+      <attribute name="verticalHeaderMinimumSectionSize">
+       <number>0</number>
+      </attribute>
       <attribute name="verticalHeaderStretchLastSection">
        <bool>false</bool>
       </attribute>
+      <column>
+       <property name="text">
+        <string>Μονάδα Μέτρησης</string>
+       </property>
+       <property name="background">
+        <color alpha="0">
+         <red>0</red>
+         <green>0</green>
+         <blue>250</blue>
+        </color>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Όνομα Προϊόντος</string>
+       </property>
+      </column>
      </widget>
     </item>
    </layout>
@@ -171,7 +145,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>884</width>
+     <width>1056</width>
      <height>21</height>
     </rect>
    </property>
@@ -184,8 +158,11 @@
       <string>Διαχειριστής</string>
      </property>
      <addaction name="changeProducts"/>
+     <addaction name="separator"/>
+     <addaction name="adminPasswordChange"/>
     </widget>
     <addaction name="administrator"/>
+    <addaction name="exit"/>
    </widget>
    <addaction name="menu"/>
   </widget>
@@ -203,6 +180,11 @@
   <action name="exit">
    <property name="text">
     <string>Έξοδος</string>
+   </property>
+  </action>
+  <action name="adminPasswordChange">
+   <property name="text">
+    <string>Αλλαγή Κωδικού</string>
    </property>
   </action>
  </widget>
