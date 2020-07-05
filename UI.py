@@ -76,13 +76,13 @@ class MainWindow(QtWidgets.QMainWindow):
         item = dialog.getResults()
         if(len(item) > 0):
             self.AddItemToView(item[0], item[1], item[2])
-            print(item)
 
     def CreateOrderPressed(self):
         self.saveFileDialog()
         
     def DeleteItemPressed(self):
-        print('ping!')
+        rowPosition = self.orderView.rowCount()
+        self.orderView.removeRow(rowPosition - 1)
         
     def exitCall(self):
         self.close()

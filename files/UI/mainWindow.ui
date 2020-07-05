@@ -92,6 +92,9 @@
       <property name="sizeAdjustPolicy">
        <enum>QAbstractScrollArea::AdjustToContents</enum>
       </property>
+      <property name="editTriggers">
+       <set>QAbstractItemView::DoubleClicked</set>
+      </property>
       <property name="alternatingRowColors">
        <bool>true</bool>
       </property>
@@ -106,6 +109,9 @@
       </attribute>
       <attribute name="horizontalHeaderMinimumSectionSize">
        <number>1</number>
+      </attribute>
+      <attribute name="horizontalHeaderDefaultSectionSize">
+       <number>200</number>
       </attribute>
       <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
        <bool>false</bool>
