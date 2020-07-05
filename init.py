@@ -53,6 +53,6 @@ for k in sectionDictionary.items():
 
 # setup the application
 app = QtWidgets.QApplication(sys.argv)
-window = MainWindow(sectionDictionary, workbook)
+window = MainWindow(sectionDictionary, productList)
 window.show()
 app.exec_() 

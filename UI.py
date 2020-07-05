@@ -8,11 +8,12 @@ uiparser.WidgetStack.topIsLayoutWidget = lambda self: False
 
 
 class MainWindow(QtWidgets.QMainWindow):
-    def __init__(self, sectionDictionary):
+    def __init__(self, sectionDictionary, productList):
         super(MainWindow, self).__init__()
         # Load the main UI file
         uic.loadUi('./files/UI/mainWindow.ui', self)
         self.sectionDictionary = sectionDictionary
+        self.productList = productList
         sectionList = []
         for k in sectionDictionary.items():
             sectionList.append(k[0])
@@ -58,9 +59,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.adminPasswordChange = self.findChild(QtWidgets.QAction, 'adminPasswordChange')
         self.SetUpMenuBar()
         
-        # self.btnExit.clicked.connect(self.close)
-        # self.actionExit.triggered.connect(self.close)
-
     def SetTableStyle(self):
         header = self.orderView.horizontalHeader()
         header.setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
@@ -71,7 +69,8 @@ class MainWindow(QtWidgets.QMainWindow):
         # print(self.dateEdit.date().toString('dd/MM/yyyy'))
 
     def AddItemPressed(self):
-        dialog = AddItemWindow([['kg', 'name1'], ['kg', 'name2'], ['Lt', 'name3']])
+        selectedSectionFrom = str(self.fromSelectorBox.currentText())
+        dialog = AddItemWindow(self.productList[self.sectionDictionary[selectedSectionFrom]])
         dialog.show()
         item = dialog.getResults()
         if(len(item) > 0):
