@@ -77,7 +77,10 @@ class MainWindow(QtWidgets.QMainWindow):
             self.AddItemToView(item[0], item[1], item[2])
 
     def CreateOrderPressed(self):
-        self.saveFileDialog()
+        data = self.getTableData()
+        
+    def ChangeProductList(self):
+        self.insertProductList()
         
     def DeleteItemPressed(self):
         rowPosition = self.orderView.rowCount()
@@ -99,10 +102,7 @@ class MainWindow(QtWidgets.QMainWindow):
         
         # setup change password option
         self.adminPasswordChange.setStatusTip('Αλλαγή κωδικού διαχειρηστή')
-        self.adminPasswordChange.triggered.connect(self.ChangeAdminPassword)
-           
-    def ChangeProductList(self):
-        self.insertProductList()
+        self.adminPasswordChange.triggered.connect(self.ChangeAdminPassword)    
         
     def ChangeAdminPassword(self):
         print('Password Changed')
@@ -121,12 +121,25 @@ class MainWindow(QtWidgets.QMainWindow):
         self.orderView.insertRow(rowPosition)
         self.orderView.setItem(rowPosition, 0, QtWidgets.QTableWidgetItem(f'{amount} {unit}'))
         self.orderView.setItem(rowPosition, 1, QtWidgets.QTableWidgetItem(name))
+    
+    def getTableData(self):
+        model = self.orderView.model()
+        data = []
+        for row in range(model.rowCount()):
+            data.append([])
+            for column in range(model.columnCount()):
+                index = model.index(row, column)
+                # We suppose data are strings
+                data[row].append(str(model.data(index)))
+        return data
         
     def saveFileDialog(self):
         options = QFileDialog.Options()
         fileName, _ = QFileDialog.getSaveFileName(self, "Αποθήκευση παραγγελίας", "", "Excel Files (*.xlsx);;All Files (*)", options=options)
         if fileName:
             print(fileName)
+            """ dest = './files/data/'
+            copyfile(fileName, dest) """
             
     def insertProductList(self):
         options = QFileDialog.Options()
