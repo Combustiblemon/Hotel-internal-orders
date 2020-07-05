@@ -74,8 +74,9 @@ class MainWindow(QtWidgets.QMainWindow):
         dialog = AddItemWindow([['kg', 'name1'], ['kg', 'name2'], ['Lt', 'name3']])
         dialog.show()
         item = dialog.getResults()
-        self.AddItemToView(item[0], item[1], item[2])
-        print(item)
+        if(len(item) > 0):
+            self.AddItemToView(item[0], item[1], item[2])
+            print(item)
 
     def CreateOrderPressed(self):
         self.saveFileDialog()
@@ -172,10 +173,10 @@ class AddItemWindow(QtWidgets.QDialog):
         
     def AddButtonPressed(self):
         self.currentItem = []
-        inputBox = ItemNumberInput()
-        amount = inputBox.getResults()
-        self.currentItem.append(amount) 
         if self.productList.currentItem():
+            inputBox = ItemNumberInput()
+            amount = inputBox.getResults()
+            self.currentItem.append(amount) 
             self.currentItem.append(self.productList.item(self.productList.currentItem().row(), 0).text())
             self.currentItem.append(self.productList.item(self.productList.currentItem().row(), 1).text())   
             self.close()
