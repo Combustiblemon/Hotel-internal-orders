@@ -71,7 +71,6 @@ class MainWindow(QtWidgets.QMainWindow):
     def AddItemPressed(self):
         selectedSectionFrom = str(self.fromSelectorBox.currentText())
         dialog = AddItemWindow(self.productList[self.sectionDictionary[selectedSectionFrom]])
-        dialog.show()
         item = dialog.getResults()
         if(len(item) > 0):
             self.AddItemToView(item[0], item[1], item[2])
@@ -142,8 +141,6 @@ class MainWindow(QtWidgets.QMainWindow):
         close = close.exec()
 
         if close == QMessageBox.Yes:
-            if self.dialog:
-                self.dialog.close()
             event.accept()
         else:
             event.ignore()
