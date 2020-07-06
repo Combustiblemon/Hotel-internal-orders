@@ -233,3 +233,9 @@ class ItemNumberInput(QtWidgets.QDialog):
              
     def accepted(self):
         return super().accepted()(self)
+    
+class LoadingWindow(QtWidgets.QDialog):
+    def __init__(self):
+        super(LoadingWindow, self).__init__()
+        # Load the main UI file
+        uic.loadUi('./files/UI/LoadingWindow.ui', self)
