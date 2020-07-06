@@ -71,8 +71,10 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def AddItemPressed(self):
         selectedSectionFrom = str(self.fromSelectorBox.currentText())
-        dialog = AddItemWindow(self.productList[self.sectionDictionary[selectedSectionFrom]])
+        dialog = AddItemWindow(self.productDictionary[self.sectionDictionary[selectedSectionFrom]])
         item = dialog.getResults()
+        if(item is None):
+            return
         if(len(item) > 0):
             self.AddItemToView(item[0], item[1], item[2])
 
