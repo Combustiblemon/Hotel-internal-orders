@@ -235,6 +235,8 @@
      <addaction name="adminPasswordChange"/>
     </widget>
     <addaction name="administrator"/>
+    <addaction name="openOrder"/>
+    <addaction name="separator"/>
     <addaction name="exit"/>
    </widget>
    <addaction name="menu"/>
@@ -250,14 +252,19 @@
     <string>Αλλαγή Κωδικού</string>
    </property>
   </action>
-  <action name="exit">
-   <property name="text">
-    <string>Έξοδος</string>
-   </property>
-  </action>
   <action name="adminPasswordChange">
    <property name="text">
     <string>Αλλαγή Κωδικού</string>
+   </property>
+  </action>
+  <action name="openOrder">
+   <property name="text">
+    <string>Άνοιγμα παραγγελίας</string>
+   </property>
+  </action>
+  <action name="exit">
+   <property name="text">
+    <string>Έξοδος</string>
    </property>
   </action>
  </widget>

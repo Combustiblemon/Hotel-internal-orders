@@ -71,7 +71,28 @@ class MainWindow(QtWidgets.QMainWindow):
         self.changeProducts = self.findChild(QtWidgets.QAction, 'changeProducts')
         self.menuExitOption = self.findChild(QtWidgets.QAction, 'exit')
         self.adminPasswordChange = self.findChild(QtWidgets.QAction, 'adminPasswordChange')
+        self.openOrder = self.findChild(QtWidgets.QAction, 'openOrder')
         self.SetUpMenuBar()
+        
+    def SetUpMenuBar(self):
+        # setup menu exit button       
+        self.menuExitOption.setShortcut('Ctrl+Q')
+        self.menuExitOption.setStatusTip('Έξοδος προγράμματος')
+        self.menuExitOption.triggered.connect(self.exitCall)
+        
+        # setup change products option
+        self.changeProducts.setShortcut('Ctrl+E')
+        self.changeProducts.setStatusTip('Αλλαγή λίστας προϊόντων')
+        self.changeProducts.triggered.connect(self.ChangeProductList)
+        
+        # setup change password option
+        self.adminPasswordChange.setStatusTip('Αλλαγή κωδικού διαχειρηστή')
+        self.adminPasswordChange.triggered.connect(self.ChangeAdminPassword)
+        
+        # setup open order option
+        self.openOrder.setShortcut('Ctrl+R')
+        self.openOrder.setStatusTip('Αλλαγή Υπάρχουσας παραγγελίας')
+        self.openOrder.triggered.connect(self.openOrderFile)
         
     def SetTableStyle(self):
         header = self.orderView.horizontalHeader()
@@ -123,29 +144,20 @@ class MainWindow(QtWidgets.QMainWindow):
         wb.save("table.xlsx")
         
     def ChangeProductList(self):
-        self.insertProductList()
-        
+        filepath = self.insertProductList()
+        if(filepath):
+            dest = './files/data/ProductList.xlsx'
+            copyfile(filepath, dest)
+            
     def DeleteItemPressed(self):
         rowPosition = self.orderView.rowCount()
         self.orderView.removeRow(rowPosition - 1)
         
     def exitCall(self):
-        self.close()
+        self.close()  
         
-    def SetUpMenuBar(self):
-        # setup menu exit button       
-        self.menuExitOption.setShortcut('Ctrl+Q')
-        self.menuExitOption.setStatusTip('Έξοδος προγράμματος')
-        self.menuExitOption.triggered.connect(self.exitCall)
-        
-        # setup change products option
-        self.changeProducts.setShortcut('Ctrl+E')
-        self.changeProducts.setStatusTip('Αλλαγή λίστας προϊόντων')
-        self.changeProducts.triggered.connect(self.ChangeProductList)
-        
-        # setup change password option
-        self.adminPasswordChange.setStatusTip('Αλλαγή κωδικού διαχειρηστή')
-        self.adminPasswordChange.triggered.connect(self.ChangeAdminPassword)    
+    def openOrderFile(self):
+        filepath = self.openFileDialog()
         
     def ChangeAdminPassword(self):
         print('Password Changed')
@@ -193,20 +205,17 @@ class MainWindow(QtWidgets.QMainWindow):
                 data[row].append(str(model.data(index)))
         return data
         
-    def saveFileDialog(self):
+    def saveFileDialog(self, filetypes="Excel Files (*.xlsx);;All Files (*)"):
         options = QFileDialog.Options()
-        fileName, _ = QFileDialog.getSaveFileName(self, "Αποθήκευση παραγγελίας", "", "Excel Files (*.xlsx);;All Files (*)", options=options)
+        fileName, _ = QFileDialog.getSaveFileName(self, "Αποθήκευση παραγγελίας", "", filetypes, options=options)
         if fileName:
-            print(fileName)
-            """ dest = './files/data/'
-            copyfile(fileName, dest) """
+            return fileName
             
-    def insertProductList(self):
+    def openFileDialog(self, filetypes="Excel Files (*.xlsx);;All Files (*)"):
         options = QFileDialog.Options()
         fileName, _ = QFileDialog.getOpenFileName(self, "Άνοιγμα λίστας", "", "Excel Files (*.xlsx);;All Files (*)", options=options)
         if fileName:
-            dest = './files/data/ProductList.xlsx'
-            copyfile(fileName, dest)
+            return fileName
     
     def closeEvent(self, event):
         close = QMessageBox()
