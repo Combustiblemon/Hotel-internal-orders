@@ -29,7 +29,9 @@ for sheet in workbook.worksheets:
 productList = {}
 for sheet in workbook.sheetnames:
     productList[sheet] = []
-    for row in workbook[sheet].iter_rows(values_only=True):
+    for row in workbook[sheet].iter_rows(min_row=3, values_only=True):
+        if(row[0] is None):
+            continue
         productList[sheet].append(row)
 # print(productList)
 # print(workbook.sheetnames)
