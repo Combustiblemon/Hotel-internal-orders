@@ -4,17 +4,18 @@ from PyQt5.QtWidgets import QDialog, QMessageBox, QMainWindow, QWidget, QPushBut
 from PyQt5.QtGui import QIcon
 from PyQt5.uic import uiparser
 from shutil import copyfile
+from openpyxl import load_workbook, Workbook
 
 uiparser.WidgetStack.topIsLayoutWidget = lambda self: False
 
 
 class MainWindow(QtWidgets.QMainWindow):
-    def __init__(self, sectionDictionary, productList):
+    def __init__(self, sectionDictionary, productDictionary):
         super(MainWindow, self).__init__()
         # Load the main UI file
         uic.loadUi('./files/UI/mainWindow.ui', self)
         self.sectionDictionary = sectionDictionary
-        self.productList = productList
+        self.productDictionary = productDictionary
         sectionList = []
         for k in sectionDictionary.items():
             sectionList.append(k[0])
@@ -164,21 +165,20 @@ class MainWindow(QtWidgets.QMainWindow):
             
 
 class AddItemWindow(QtWidgets.QDialog):
-    def __init__(self, productsList):
+    def __init__(self, productDictionary):
         super(AddItemWindow, self).__init__()
         # Load the main UI file
         uic.loadUi('./files/UI/createOrder.ui', self)
-        self.ConnectLogicToObjects(productsList)   
+        self.ConnectLogicToObjects(productDictionary)   
     
-    def ConnectLogicToObjects(self, productsList):
+    def ConnectLogicToObjects(self, productDictionary):
         self.addButton = self.findChild(QtWidgets.QPushButton, 'addItem')
         self.addButton.clicked.connect(self.AddButtonPressed)
         
         self.productList = self.findChild(QtWidgets.QTableWidget, 'productList')
         self.SetTableStyle()
-        for i in range(len(productsList)):
-            #print(productsList[i][1])
-            self.AddItemToView(productsList[i][0], productsList[i][1])
+        for i in range(len(productDictionary)):
+            self.AddItemToView(productDictionary[i][2], productDictionary[i][1])
             
     def SetTableStyle(self):
         header = self.productList.horizontalHeader()
