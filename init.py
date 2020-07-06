@@ -1,11 +1,15 @@
 """Doc."""
 from PyQt5 import QtWidgets
-from UI import MainWindow
+from UI import LoadingWindow, MainWindow
 from openpyxl import Workbook, load_workbook 
 import sys
 import json
 import io
 
+
+app = QtWidgets.QApplication(sys.argv)
+loadingW = LoadingWindow()
+loadingW.show()
 # Save workbook
 """ workbook = Workbook()
 sheet = workbook.active
@@ -52,7 +56,7 @@ for k in sectionDictionary.items():
 # print(sheet.title)
 
 # setup the application
-app = QtWidgets.QApplication(sys.argv)
+loadingW.close()
 window = MainWindow(sectionDictionary, productList)
 window.show()
 app.exec_() 
