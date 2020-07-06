@@ -15,6 +15,93 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
+    <item row="8" column="2" alignment="Qt::AlignLeft">
+     <widget class="QLineEdit" name="searchInput">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+        <horstretch>5</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>150</width>
+        <height>20</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>1500000</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="sizeIncrement">
+       <size>
+        <width>0</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="baseSize">
+       <size>
+        <width>0</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="placeholderText">
+       <string>Αναζήτηση</string>
+      </property>
+     </widget>
+    </item>
+    <item row="8" column="0">
+     <widget class="QComboBox" name="fromSelector">
+      <property name="maximumSize">
+       <size>
+        <width>150</width>
+        <height>16777215</height>
+       </size>
+      </property>
+     </widget>
+    </item>
+    <item row="7" column="6" alignment="Qt::AlignRight">
+     <widget class="QLabel" name="dateLabel">
+      <property name="font">
+       <font>
+        <family>Calibri</family>
+        <pointsize>12</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Ημερομηνία:</string>
+      </property>
+     </widget>
+    </item>
+    <item row="11" column="6">
+     <widget class="QPushButton" name="addItem">
+      <property name="text">
+       <string>Προσθήκη Προϊόντος</string>
+      </property>
+     </widget>
+    </item>
+    <item row="11" column="0">
+     <widget class="QPushButton" name="createOrder">
+      <property name="text">
+       <string>Δημιουργία Παραγγελίας</string>
+      </property>
+     </widget>
+    </item>
+    <item row="8" column="5">
+     <widget class="QComboBox" name="toSelector">
+      <property name="maximumSize">
+       <size>
+        <width>150</width>
+        <height>16777215</height>
+       </size>
+      </property>
+     </widget>
+    </item>
     <item row="7" column="0">
      <widget class="QLabel" name="fromLabel">
       <property name="font">
@@ -28,63 +115,10 @@
       </property>
      </widget>
     </item>
-    <item row="11" column="3">
-     <widget class="QPushButton" name="addItem">
-      <property name="text">
-       <string>Προσθήκη Προϊόντος</string>
-      </property>
-     </widget>
-    </item>
-    <item row="7" column="2">
-     <widget class="QLabel" name="toLabel">
-      <property name="font">
-       <font>
-        <family>Calibri</family>
-        <pointsize>12</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Προς τμήμα:</string>
-      </property>
-     </widget>
-    </item>
-    <item row="8" column="3">
+    <item row="8" column="6" alignment="Qt::AlignRight">
      <widget class="QDateEdit" name="dateEdit"/>
     </item>
-    <item row="11" column="2">
-     <widget class="QPushButton" name="deleteItem">
-      <property name="text">
-       <string>Διαγραφή Προϊόντος</string>
-      </property>
-     </widget>
-    </item>
-    <item row="8" column="2">
-     <widget class="QComboBox" name="toSelector"/>
-    </item>
-    <item row="11" column="0">
-     <widget class="QPushButton" name="createOrder">
-      <property name="text">
-       <string>Δημιουργία Παραγγελίας</string>
-      </property>
-     </widget>
-    </item>
-    <item row="7" column="3">
-     <widget class="QLabel" name="dateLabel">
-      <property name="font">
-       <font>
-        <family>Calibri</family>
-        <pointsize>12</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Ημερομηνία:</string>
-      </property>
-     </widget>
-    </item>
-    <item row="8" column="0">
-     <widget class="QComboBox" name="fromSelector"/>
-    </item>
-    <item row="10" column="0" colspan="4">
+    <item row="10" column="0" colspan="7">
      <widget class="QTableWidget" name="orderView">
       <property name="focusPolicy">
        <enum>Qt::WheelFocus</enum>
@@ -92,14 +126,8 @@
       <property name="sizeAdjustPolicy">
        <enum>QAbstractScrollArea::AdjustToContents</enum>
       </property>
-      <property name="editTriggers">
-       <set>QAbstractItemView::DoubleClicked</set>
-      </property>
       <property name="alternatingRowColors">
        <bool>true</bool>
-      </property>
-      <property name="selectionMode">
-       <enum>QAbstractItemView::SingleSelection</enum>
       </property>
       <property name="rowCount">
        <number>0</number>
@@ -112,9 +140,6 @@
       </attribute>
       <attribute name="horizontalHeaderMinimumSectionSize">
        <number>1</number>
-      </attribute>
-      <attribute name="horizontalHeaderDefaultSectionSize">
-       <number>200</number>
       </attribute>
       <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
        <bool>false</bool>
@@ -145,6 +170,39 @@
         <string>Όνομα Προϊόντος</string>
        </property>
       </column>
+     </widget>
+    </item>
+    <item row="7" column="5">
+     <widget class="QLabel" name="toLabel">
+      <property name="font">
+       <font>
+        <family>Calibri</family>
+        <pointsize>12</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Προς τμήμα:</string>
+      </property>
+     </widget>
+    </item>
+    <item row="11" column="2">
+     <widget class="QPushButton" name="deleteItem">
+      <property name="text">
+       <string>Διαγραφή Προϊόντος</string>
+      </property>
+     </widget>
+    </item>
+    <item row="8" column="3" alignment="Qt::AlignLeft">
+     <widget class="QPushButton" name="searchButton">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+        <horstretch>19</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="text">
+       <string>Αναζήτηση</string>
+      </property>
      </widget>
     </item>
    </layout>

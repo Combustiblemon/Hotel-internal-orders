@@ -1,10 +1,14 @@
 
 from PyQt5 import QtWidgets, QtCore, uic
-from PyQt5.QtWidgets import QDialog, QMessageBox, QMainWindow, QWidget, QPushButton, QAction, QInputDialog, QLineEdit, QFileDialog
+from PyQt5.QtWidgets import QLabel, QDialog, QMessageBox, QMainWindow, QWidget, QPushButton, QAction, QInputDialog, QLineEdit, QFileDialog
 from PyQt5.QtGui import QIcon
 from PyQt5.uic import uiparser
 from shutil import copyfile
 from openpyxl import load_workbook, Workbook
+from openpyxl.styles import Side, Border
+from openpyxl.styles import Fill, fills, PatternFill
+from openpyxl.styles.colors import Color
+from openpyxl.cell import Cell
 
 uiparser.WidgetStack.topIsLayoutWidget = lambda self: False
 
@@ -17,6 +21,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.sectionDictionary = sectionDictionary
         self.productDictionary = productDictionary
         sectionList = []
+        self.text = ''
+        self.items = []
+        self.index = 0
         for k in sectionDictionary.items():
             sectionList.append(k[0])
         self.ConnectLogicToObjects(sectionList)
@@ -37,6 +44,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.deleteItemButton = self.findChild(QtWidgets.QPushButton, 'deleteItem')
         self.deleteItemButton.clicked.connect(self.DeleteItemPressed)
         
+        self.searchButton = self.findChild(QtWidgets.QPushButton, 'searchButton')
+        self.searchButton.clicked.connect(self.searchTable) 
+        
         self.dateLabel = self.findChild(QtWidgets.QLabel, 'dateLabel')
         self.fromLabel = self.findChild(QtWidgets.QLabel, 'fromLabel')
         self.toLabel = self.findChild(QtWidgets.QLabel, 'toLabel')
@@ -49,6 +59,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.toSelectorBox = self.findChild(QtWidgets.QComboBox, 'toSelector')
         self.toSelectorBox.clear()
         self.toSelectorBox.addItems(sectionList)
+        
+        self.searchInput = self.findChild(QtWidgets.QLineEdit, 'searchInput')
         
         self.dateEdit = self.findChild(QtWidgets.QDateEdit, 'dateEdit')
         self.SetDateStyle()
@@ -72,7 +84,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def AddItemPressed(self):
         selectedSectionFrom = str(self.fromSelectorBox.currentText())
-        dialog = AddItemWindow(self.productDictionary[self.sectionDictionary[selectedSectionFrom]])
+        dialog = AddItemWindow(self.productDictionary[self.sectionDictionary[selectedSectionFrom]], selectedSectionFrom)
         item = dialog.getResults()
         if(item is None):
             return
@@ -81,6 +93,34 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def CreateOrderPressed(self):
         data = self.getTableData()
+        wb = Workbook()
+        ws = wb.worksheets[0]
+        
+        borderStyle = Border(left=Side(border_style='medium', color='FF000000'),
+                             right=Side(border_style='medium', color='FF000000'),
+                             top=Side(border_style='medium', color='FF000000'),
+                             bottom=Side(border_style='medium', color='FF000000'),
+                             diagonal=Side(border_style=None, color='FF000000'),
+                             diagonal_direction=0,
+                             outline=Side(border_style=None, color='FF000000'),
+                             vertical=Side(border_style=None, color='FF000000'),
+                             horizontal=Side(border_style=None, color='FF000000')
+                             )
+        
+        ws.append(['Μονάδα', 'Όνομα'])
+        for row in data:
+            ws.append(row)
+        """ row = ws.row_dimensions[1]
+        row.color = Color("FF0000")
+        row.border = borderStyle """
+        ws['A1'].fill = PatternFill(start_color="ABAB72", end_color="ABAB72", fill_type="solid")
+        ws['A1'].border = borderStyle
+        ws['B1'].fill = PatternFill(start_color="ABAB72", end_color="ABAB72", fill_type="solid")
+        
+        ws.column_dimensions['A'].width = 20
+        ws.column_dimensions['B'].width = 60
+        
+        wb.save("table.xlsx")
         
     def ChangeProductList(self):
         self.insertProductList()
@@ -124,6 +164,23 @@ class MainWindow(QtWidgets.QMainWindow):
         self.orderView.insertRow(rowPosition)
         self.orderView.setItem(rowPosition, 0, QtWidgets.QTableWidgetItem(f'{amount} {unit}'))
         self.orderView.setItem(rowPosition, 1, QtWidgets.QTableWidgetItem(name))
+        
+    def searchTable(self):
+        # self.find(self.searchInput.text().strip().upper())
+        if (self.text != self.searchInput.text().strip().upper()):
+            self.text = self.searchInput.text().strip().upper()
+            self.items = self.orderView.findItems(self.text, QtCore.Qt.MatchContains)
+            self.index = 0
+        else:
+            if(self.index < len(self.items) - 1):
+                self.index += 1
+            else:
+                self.index = 0
+        if self.items:
+            self.orderView.selectRow(self.items[self.index].row())
+        else:
+            if(self.text != ''):
+                QMessageBox.information(self, 'Αναζήτηση', f'Δεν βρέθηκε το προϊόν με το ονομα "{self.searchInput.text().strip()}"')
     
     def getTableData(self):
         model = self.orderView.model()
@@ -165,18 +222,30 @@ class MainWindow(QtWidgets.QMainWindow):
             
 
 class AddItemWindow(QtWidgets.QDialog):
-    def __init__(self, productDictionary):
+    def __init__(self, productDictionary, currentSection):
         super(AddItemWindow, self).__init__()
         # Load the main UI file
         uic.loadUi('./files/UI/createOrder.ui', self)
-        self.ConnectLogicToObjects(productDictionary)   
+        self.text = ''
+        self.items = []
+        self.index = 0
+        self.ConnectLogicToObjects(productDictionary, currentSection)   
     
-    def ConnectLogicToObjects(self, productDictionary):
+    def ConnectLogicToObjects(self, productDictionary, currentSection):
         self.addButton = self.findChild(QtWidgets.QPushButton, 'addItem')
         self.addButton.clicked.connect(self.AddButtonPressed)
         
+        self.searchButton = self.findChild(QtWidgets.QPushButton, 'searchButton')
+        self.searchButton.clicked.connect(self.searchTable) 
+        
+        self.currentSectionLabel = self.findChild(QtWidgets.QLabel, 'currentSectionLabel')
+        self.currentSectionLabel.setText(currentSection)
+        
+        self.searchInput = self.findChild(QtWidgets.QLineEdit, 'searchInput')
+        
         self.productList = self.findChild(QtWidgets.QTableWidget, 'productList')
         self.SetTableStyle()
+        
         for i in range(len(productDictionary)):
             self.AddItemToView(productDictionary[i][2], productDictionary[i][1])
             
@@ -184,6 +253,23 @@ class AddItemWindow(QtWidgets.QDialog):
         header = self.productList.horizontalHeader()
         header.setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
         
+    def searchTable(self):
+        # self.find(self.searchInput.text().strip().upper())
+        if (self.text != self.searchInput.text().strip().upper()):
+            self.text = self.searchInput.text().strip().upper()
+            self.items = self.productList.findItems(self.text, QtCore.Qt.MatchContains)
+            self.index = 0
+        else:
+            if(self.index < len(self.items) - 1):
+                self.index += 1
+            else:
+                self.index = 0
+        if self.items:
+            self.productList.selectRow(self.items[self.index].row())
+        else:
+            if(self.text != ''):
+                QMessageBox.information(self, 'Αναζήτηση', f'Δεν βρέθηκε το προϊόν με το ονομα "{self.searchInput.text().strip()}"')            
+            
     def AddButtonPressed(self):
         self.currentItem = []
         if self.productList.currentItem():

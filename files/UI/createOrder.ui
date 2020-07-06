@@ -14,24 +14,50 @@
    <string>Προσθήκη Προϊόντος</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="1" column="1">
+   <item row="3" column="3">
     <widget class="QPushButton" name="addItem">
      <property name="text">
       <string>Προσθήκη</string>
      </property>
     </widget>
    </item>
-   <item row="0" column="0" colspan="2">
+   <item row="1" column="1" alignment="Qt::AlignLeft">
+    <widget class="QPushButton" name="searchButton">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+       <horstretch>10</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>Αναζήτηση</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0" alignment="Qt::AlignLeft">
+    <widget class="QLineEdit" name="searchInput">
+     <property name="placeholderText">
+      <string>Αναζήτηση</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0" colspan="4">
     <widget class="QTableWidget" name="productList">
+     <property name="mouseTracking">
+      <bool>true</bool>
+     </property>
+     <property name="sizeAdjustPolicy">
+      <enum>QAbstractScrollArea::AdjustToContents</enum>
+     </property>
      <property name="editTriggers">
       <set>QAbstractItemView::NoEditTriggers</set>
-     </property>
-     <property name="selectionMode">
-      <enum>QAbstractItemView::SingleSelection</enum>
      </property>
      <property name="selectionBehavior">
       <enum>QAbstractItemView::SelectRows</enum>
      </property>
+     <attribute name="horizontalHeaderDefaultSectionSize">
+      <number>120</number>
+     </attribute>
      <attribute name="horizontalHeaderStretchLastSection">
       <bool>true</bool>
      </attribute>
@@ -47,8 +73,36 @@
      </column>
     </widget>
    </item>
+   <item row="1" column="2" alignment="Qt::AlignLeft">
+    <widget class="QLabel" name="currentSectionLabel">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+       <horstretch>12</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="font">
+      <font>
+       <family>Calibri</family>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Τμήμα</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>searchInput</tabstop>
+  <tabstop>searchButton</tabstop>
+  <tabstop>addItem</tabstop>
+  <tabstop>productList</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>
@@ -58,7 +112,7 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>658</x>
+     <x>872</x>
      <y>603</y>
     </hint>
     <hint type="destinationlabel">

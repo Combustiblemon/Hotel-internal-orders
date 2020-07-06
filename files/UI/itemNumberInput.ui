@@ -49,6 +49,9 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>itemInput</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>
