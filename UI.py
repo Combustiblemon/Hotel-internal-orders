@@ -107,6 +107,7 @@ class MainWindow(QtWidgets.QMainWindow):
         selectedSectionFrom = str(self.toSelectorBox.currentText())
         dialog = AddItemWindow(self.productDictionary[self.sectionDictionary[selectedSectionFrom]], selectedSectionFrom)
         item = dialog.getResults()
+        print(item)
         if(item is None):
             return
         if(len(item) > 0):
@@ -247,6 +248,9 @@ class AddItemWindow(QtWidgets.QDialog):
         self.searchButton = self.findChild(QtWidgets.QPushButton, 'searchButton')
         self.searchButton.clicked.connect(self.searchTable) 
         
+        self.manualAddItemButton = self.findChild(QtWidgets.QPushButton, 'manualAddItem')
+        self.manualAddItemButton.clicked.connect(self.manualAddItemPressed) 
+        
         self.currentSectionLabel = self.findChild(QtWidgets.QLabel, 'currentSectionLabel')
         self.currentSectionLabel.setText(currentSection)
         
@@ -277,7 +281,30 @@ class AddItemWindow(QtWidgets.QDialog):
             self.productList.selectRow(self.items[self.index].row())
         else:
             if(self.text != ''):
-                QMessageBox.information(self, 'Αναζήτηση', f'Δεν βρέθηκε το προϊόν με το ονομα "{self.searchInput.text().strip()}"')            
+                QMessageBox.information(self, 'Αναζήτηση', f'Δεν βρέθηκε το προϊόν με το ονομα "{self.searchInput.text().strip()}"')        
+                
+    def manualAddItemPressed(self):
+        """ self.currentItem = []
+        addItem = addExtraItem()
+        item = addItem.getResults()
+        if (item is None):
+            self.close()
+        else:
+            self.currentItem.append(item[0])
+            self.currentItem.append(item[1])
+            self.currentItem.append(item[2])
+            self.close()   """  
+        self.currentItem = []
+        inputBox = addExtraItem()
+        amount = inputBox.getResults()
+        if (amount is None):
+            self.close()
+        else:
+            self.currentItem.append(amount[0]) 
+            self.currentItem.append(amount[1])
+            self.currentItem.append(amount[2])
+            print(amount[0], amount[1], amount[2])    
+            self.close()   
             
     def AddButtonPressed(self):
         self.currentItem = []
@@ -289,12 +316,15 @@ class AddItemWindow(QtWidgets.QDialog):
             else:
                 self.currentItem.append(amount) 
                 self.currentItem.append(self.productList.item(self.productList.currentItem().row(), 0).text())
-                self.currentItem.append(self.productList.item(self.productList.currentItem().row(), 1).text())   
-                self.close()     
+                self.currentItem.append(self.productList.item(self.productList.currentItem().row(), 1).text())    
+                self.close()   
     
     def getResults(self):
         if self.exec_() == QDialog.Accepted:
-            return self.currentItem
+            item = self.currentItem
+            print('get result: ')
+            print(item)
+            return item
         else:
             return None
     
@@ -327,15 +357,37 @@ class ItemNumberInput(QtWidgets.QDialog):
         
     def getResults(self):
         if self.exec_() == QDialog.Accepted:
+            self.close()
             return self.itemInput.text()
         else:
             return None
-             
-    def accepted(self):
-        return super().accepted()(self)
     
-    def rejected(self):
-        return super().rejected()
+class addExtraItem(QtWidgets.QDialog):
+    def __init__(self):
+        super(addExtraItem, self).__init__()
+        # Load the main UI file
+        uic.loadUi('./files/UI/addExtraItem.ui', self)
+        self.ConnectLogicToObjects()
+        
+    def ConnectLogicToObjects(self):
+        self.nameInputBox = self.findChild(QtWidgets.QLineEdit, 'nameInputBox')
+        self.amountInputBox = self.findChild(QtWidgets.QLineEdit, 'amountInputBox')
+        self.unitInputBox = self.findChild(QtWidgets.QLineEdit, 'unitInputBox')
+        
+        self.amountLabel = self.findChild(QtWidgets.QLabel, 'amountLabel')
+        self.nameLabel = self.findChild(QtWidgets.QLabel, 'nameLabel')
+        self.unitInputLabel = self.findChild(QtWidgets.QLabel, 'unitInputLabel')
+        
+    def getResults(self):
+        self.item = []
+        if self.exec_() == QDialog.Accepted:
+            self.item.append(self.amountInputBox.text().strip().upper())
+            self.item.append(self.unitInputBox.text().strip().upper())
+            self.item.append(self.nameInputBox.text().strip().upper())
+            self.close()
+            return self.item
+        else:
+            return None
     
 class LoadingWindow(QtWidgets.QDialog):
     def __init__(self):
