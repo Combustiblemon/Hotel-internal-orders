@@ -11,7 +11,16 @@ from openpyxl.styles.colors import Color
 from openpyxl.cell import Cell
 
 uiparser.WidgetStack.topIsLayoutWidget = lambda self: False
-
+borderStyle = Border(left=Side(border_style='medium', color='FF000000'),
+                     right=Side(border_style='medium', color='FF000000'),
+                     top=Side(border_style='medium', color='FF000000'),
+                     bottom=Side(border_style='medium', color='FF000000'),
+                     diagonal=Side(border_style=None, color='FF000000'),
+                     diagonal_direction=0,
+                     outline=Side(border_style=None, color='FF000000'),
+                     vertical=Side(border_style=None, color='FF000000'),
+                     horizontal=Side(border_style=None, color='FF000000')
+                     )      
 
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self, sectionDictionary, productDictionary):
@@ -114,37 +123,18 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def CreateOrderPressed(self):
         data = self.getTableData()
-        wb = Workbook()
+        wb = load_workbook(filename="./files/data/Template.xlsx")
         ws = wb.worksheets[0]
         
-        borderStyle = Border(left=Side(border_style='medium', color='FF000000'),
-                             right=Side(border_style='medium', color='FF000000'),
-                             top=Side(border_style='medium', color='FF000000'),
-                             bottom=Side(border_style='medium', color='FF000000'),
-                             diagonal=Side(border_style=None, color='FF000000'),
-                             diagonal_direction=0,
-                             outline=Side(border_style=None, color='FF000000'),
-                             vertical=Side(border_style=None, color='FF000000'),
-                             horizontal=Side(border_style=None, color='FF000000')
-                             )
+        # ws.append(['Μονάδα', 'Όνομα'])
+        for index, row in enumerate(data):
+            ws[f'A{index + 5}'] = row[0]
+            ws[f'B{index + 5}'] = row[1]
         
-        ws.append(['Μονάδα', 'Όνομα'])
-        for row in data:
-            ws.append(row)
-        """ row = ws.row_dimensions[1]
-        row.color = Color("FF0000")
-        row.border = borderStyle """
-        ws['A1'].fill = PatternFill(start_color="ABAB72", end_color="ABAB72", fill_type="solid")
-        ws['A1'].border = borderStyle
-        ws['B1'].fill = PatternFill(start_color="ABAB72", end_color="ABAB72", fill_type="solid")
-        
-        ws.column_dimensions['A'].width = 20
-        ws.column_dimensions['B'].width = 60
-        
-        wb.save("table.xlsx")
+        wb.save(self.saveFileDialog())
         
     def ChangeProductList(self):
-        filepath = self.insertProductList()
+        filepath = self.openFileDialog()
         if(filepath):
             dest = './files/data/ProductList.xlsx'
             copyfile(filepath, dest)
