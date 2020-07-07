@@ -104,7 +104,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # print(self.dateEdit.date().toString('dd/MM/yyyy'))
 
     def AddItemPressed(self):
-        selectedSectionFrom = str(self.fromSelectorBox.currentText())
+        selectedSectionFrom = str(self.toSelectorBox.currentText())
         dialog = AddItemWindow(self.productDictionary[self.sectionDictionary[selectedSectionFrom]], selectedSectionFrom)
         item = dialog.getResults()
         if(item is None):
