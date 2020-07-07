@@ -54,8 +54,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.fromSelectorBox = self.findChild(QtWidgets.QComboBox, 'fromSelector')
         self.fromSelectorBox.clear()
         self.fromSelectorBox.addItems(sectionList)
-        # self.text = str(self.fromSelectorBox.currentText())
-        # print(self.text)
+        
         self.toSelectorBox = self.findChild(QtWidgets.QComboBox, 'toSelector')
         self.toSelectorBox.clear()
         self.toSelectorBox.addItems(sectionList)
@@ -104,10 +103,10 @@ class MainWindow(QtWidgets.QMainWindow):
         # print(self.dateEdit.date().toString('dd/MM/yyyy'))
 
     def AddItemPressed(self):
-        selectedSectionFrom = str(self.toSelectorBox.currentText())
-        dialog = AddItemWindow(self.productDictionary[self.sectionDictionary[selectedSectionFrom]], selectedSectionFrom)
+        selectedSectionTo = str(self.toSelectorBox.currentText())
+        dialog = AddItemWindow(self.productDictionary[self.sectionDictionary[selectedSectionTo]], selectedSectionTo)
         item = dialog.getResults()
-        print(item)
+        dialog.close()
         if(item is None):
             return
         if(len(item) > 0):
@@ -284,46 +283,33 @@ class AddItemWindow(QtWidgets.QDialog):
                 QMessageBox.information(self, 'Αναζήτηση', f'Δεν βρέθηκε το προϊόν με το ονομα "{self.searchInput.text().strip()}"')        
                 
     def manualAddItemPressed(self):
-        """ self.currentItem = []
-        addItem = addExtraItem()
-        item = addItem.getResults()
-        if (item is None):
-            self.close()
-        else:
-            self.currentItem.append(item[0])
-            self.currentItem.append(item[1])
-            self.currentItem.append(item[2])
-            self.close()   """  
         self.currentItem = []
         inputBox = addExtraItem()
         amount = inputBox.getResults()
+        inputBox.close()
         if (amount is None):
             self.close()
         else:
             self.currentItem.append(amount[0]) 
             self.currentItem.append(amount[1])
             self.currentItem.append(amount[2])
-            print(amount[0], amount[1], amount[2])    
-            self.close()   
             
     def AddButtonPressed(self):
         self.currentItem = []
         if self.productList.currentItem():
             inputBox = ItemNumberInput()
             amount = inputBox.getResults()
+            inputBox.close()
             if (amount is None):
                 self.close()
             else:
                 self.currentItem.append(amount) 
                 self.currentItem.append(self.productList.item(self.productList.currentItem().row(), 0).text())
                 self.currentItem.append(self.productList.item(self.productList.currentItem().row(), 1).text())    
-                self.close()   
     
     def getResults(self):
         if self.exec_() == QDialog.Accepted:
             item = self.currentItem
-            print('get result: ')
-            print(item)
             return item
         else:
             return None
@@ -357,7 +343,6 @@ class ItemNumberInput(QtWidgets.QDialog):
         
     def getResults(self):
         if self.exec_() == QDialog.Accepted:
-            self.close()
             return self.itemInput.text()
         else:
             return None
@@ -379,13 +364,12 @@ class addExtraItem(QtWidgets.QDialog):
         self.unitInputLabel = self.findChild(QtWidgets.QLabel, 'unitInputLabel')
         
     def getResults(self):
-        self.item = []
         if self.exec_() == QDialog.Accepted:
-            self.item.append(self.amountInputBox.text().strip().upper())
-            self.item.append(self.unitInputBox.text().strip().upper())
-            self.item.append(self.nameInputBox.text().strip().upper())
-            self.close()
-            return self.item
+            item = []
+            item.append(self.amountInputBox.text().strip().upper())
+            item.append(self.unitInputBox.text().strip().upper())
+            item.append(self.nameInputBox.text().strip().upper())
+            return item
         else:
             return None
     
