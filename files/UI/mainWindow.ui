@@ -15,56 +15,6 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="8" column="2" alignment="Qt::AlignLeft">
-     <widget class="QLineEdit" name="searchInput">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-        <horstretch>5</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="minimumSize">
-       <size>
-        <width>150</width>
-        <height>20</height>
-       </size>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>1500000</width>
-        <height>16777215</height>
-       </size>
-      </property>
-      <property name="sizeIncrement">
-       <size>
-        <width>0</width>
-        <height>0</height>
-       </size>
-      </property>
-      <property name="baseSize">
-       <size>
-        <width>0</width>
-        <height>0</height>
-       </size>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-      <property name="placeholderText">
-       <string>Αναζήτηση</string>
-      </property>
-     </widget>
-    </item>
-    <item row="8" column="0">
-     <widget class="QComboBox" name="fromSelector">
-      <property name="maximumSize">
-       <size>
-        <width>150</width>
-        <height>16777215</height>
-       </size>
-      </property>
-     </widget>
-    </item>
     <item row="7" column="6" alignment="Qt::AlignRight">
      <widget class="QLabel" name="dateLabel">
       <property name="font">
@@ -78,25 +28,11 @@
       </property>
      </widget>
     </item>
-    <item row="11" column="6">
-     <widget class="QPushButton" name="addItem">
-      <property name="text">
-       <string>Προσθήκη Προϊόντος</string>
-      </property>
-     </widget>
-    </item>
-    <item row="11" column="0">
-     <widget class="QPushButton" name="createOrder">
-      <property name="text">
-       <string>Δημιουργία Παραγγελίας</string>
-      </property>
-     </widget>
-    </item>
     <item row="8" column="5">
      <widget class="QComboBox" name="toSelector">
       <property name="minimumSize">
        <size>
-        <width>125</width>
+        <width>150</width>
         <height>0</height>
        </size>
       </property>
@@ -105,6 +41,35 @@
         <width>150</width>
         <height>16777215</height>
        </size>
+      </property>
+     </widget>
+    </item>
+    <item row="8" column="0">
+     <widget class="QComboBox" name="fromSelector">
+      <property name="minimumSize">
+       <size>
+        <width>150</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>200</width>
+        <height>16777215</height>
+       </size>
+      </property>
+     </widget>
+    </item>
+    <item row="11" column="4">
+     <widget class="QPushButton" name="deleteItem">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+        <horstretch>10</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="text">
+       <string>Διαγραφή Προϊόντος</string>
       </property>
      </widget>
     </item>
@@ -120,9 +85,6 @@
        <string>Από τμήμα:</string>
       </property>
      </widget>
-    </item>
-    <item row="8" column="6" alignment="Qt::AlignRight">
-     <widget class="QDateEdit" name="dateEdit"/>
     </item>
     <item row="10" column="0" colspan="7">
      <widget class="QTableWidget" name="orderView">
@@ -191,13 +153,6 @@
       </property>
      </widget>
     </item>
-    <item row="11" column="2">
-     <widget class="QPushButton" name="deleteItem">
-      <property name="text">
-       <string>Διαγραφή Προϊόντος</string>
-      </property>
-     </widget>
-    </item>
     <item row="8" column="3" alignment="Qt::AlignLeft">
      <widget class="QPushButton" name="searchButton">
       <property name="sizePolicy">
@@ -207,6 +162,75 @@
        </sizepolicy>
       </property>
       <property name="text">
+       <string>Αναζήτηση</string>
+      </property>
+     </widget>
+    </item>
+    <item row="11" column="0" colspan="2">
+     <widget class="QPushButton" name="createOrder">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+        <horstretch>5</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="text">
+       <string>Δημιουργία Παραγγελίας</string>
+      </property>
+     </widget>
+    </item>
+    <item row="8" column="6" alignment="Qt::AlignRight">
+     <widget class="QDateEdit" name="dateEdit"/>
+    </item>
+    <item row="11" column="5" colspan="2">
+     <widget class="QPushButton" name="addItem">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="text">
+       <string>Προσθήκη Προϊόντος</string>
+      </property>
+     </widget>
+    </item>
+    <item row="8" column="1">
+     <widget class="QLineEdit" name="searchInput">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+        <horstretch>5</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>150</width>
+        <height>20</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>1500000</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="sizeIncrement">
+       <size>
+        <width>0</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="baseSize">
+       <size>
+        <width>0</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="placeholderText">
        <string>Αναζήτηση</string>
       </property>
      </widget>
