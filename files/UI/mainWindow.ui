@@ -241,6 +241,19 @@
       </property>
      </widget>
     </item>
+    <item row="8" column="4">
+     <widget class="QPushButton" name="clearButton">
+      <property name="maximumSize">
+       <size>
+        <width>100</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>Καθαρισμός</string>
+      </property>
+     </widget>
+    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -261,8 +274,6 @@
       <string>Διαχειριστής</string>
      </property>
      <addaction name="changeProducts"/>
-     <addaction name="separator"/>
-     <addaction name="adminPasswordChange"/>
     </widget>
     <addaction name="administrator"/>
     <addaction name="openOrder"/>
@@ -274,7 +285,7 @@
   <widget class="QStatusBar" name="statusbar"/>
   <action name="changeProducts">
    <property name="text">
-    <string>Αλλαγή Προϊόντων</string>
+    <string>Αλλαγή Λίστας Προϊόντων</string>
    </property>
   </action>
   <action name="action_4">

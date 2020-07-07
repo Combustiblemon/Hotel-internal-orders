@@ -11,6 +11,7 @@ from openpyxl.styles.colors import Color
 from openpyxl.cell import Cell
 
 uiparser.WidgetStack.topIsLayoutWidget = lambda self: False
+
 borderStyle = Border(left=Side(border_style='medium', color='FF000000'),
                      right=Side(border_style='medium', color='FF000000'),
                      top=Side(border_style='medium', color='FF000000'),
@@ -56,6 +57,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.searchButton = self.findChild(QtWidgets.QPushButton, 'searchButton')
         self.searchButton.clicked.connect(self.searchTable) 
         
+        self.clearButton = self.findChild(QtWidgets.QPushButton, 'clearButton')
+        self.clearButton.clicked.connect(self.clearButtonPressed)
+        
         self.dateLabel = self.findChild(QtWidgets.QLabel, 'dateLabel')
         self.fromLabel = self.findChild(QtWidgets.QLabel, 'fromLabel')
         self.toLabel = self.findChild(QtWidgets.QLabel, 'toLabel')
@@ -78,7 +82,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.adminMenu = self.findChild(QtWidgets.QMenu, 'administrator')
         self.changeProducts = self.findChild(QtWidgets.QAction, 'changeProducts')
         self.menuExitOption = self.findChild(QtWidgets.QAction, 'exit')
-        self.adminPasswordChange = self.findChild(QtWidgets.QAction, 'adminPasswordChange')
         self.openOrder = self.findChild(QtWidgets.QAction, 'openOrder')
         self.SetUpMenuBar()
         
@@ -93,10 +96,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.changeProducts.setStatusTip('Αλλαγή λίστας προϊόντων')
         self.changeProducts.triggered.connect(self.ChangeProductList)
         
-        # setup change password option
-        self.adminPasswordChange.setStatusTip('Αλλαγή κωδικού διαχειρηστή')
-        self.adminPasswordChange.triggered.connect(self.ChangeAdminPassword)
-        
         # setup open order option
         self.openOrder.setShortcut('Ctrl+R')
         self.openOrder.setStatusTip('Αλλαγή Υπάρχουσας παραγγελίας')
@@ -109,7 +108,9 @@ class MainWindow(QtWidgets.QMainWindow):
     def SetDateStyle(self):
         self.dateEdit.setDateTime(QtCore.QDateTime.currentDateTime())
         self.dateEdit.setMaximumDate(QtCore.QDate(7999, 12, 28))
-        # print(self.dateEdit.date().toString('dd/MM/yyyy'))
+        
+    def clearButtonPressed(self):
+        self.orderView.setRowCount(0)
 
     def AddItemPressed(self):
         selectedSectionTo = str(self.toSelectorBox.currentText())
@@ -122,16 +123,22 @@ class MainWindow(QtWidgets.QMainWindow):
             self.AddItemToView(item[0], item[1], item[2])
 
     def CreateOrderPressed(self):
+        filepath = self.saveFileDialog()
+        if filepath is None:
+            return
         data = self.getTableData()
         wb = load_workbook(filename="./files/data/Template.xlsx")
         ws = wb.worksheets[0]
         
-        # ws.append(['Μονάδα', 'Όνομα'])
+        ws['B2'] = self.fromSelectorBox.currentText()
+        ws['D2'] = self.toSelectorBox.currentText()
+        ws['E3'] = self.dateEdit.date().toString('dd/MM/yyyy')
         for index, row in enumerate(data):
             ws[f'A{index + 5}'] = row[0]
+            ws[f'A{index + 5}'].style = borderStyle
             ws[f'B{index + 5}'] = row[1]
-        
-        wb.save(self.saveFileDialog())
+            ws[f'A{index + 5}'].style = borderStyle
+        wb.save(filepath)
         
     def ChangeProductList(self):
         filepath = self.openFileDialog()
@@ -148,9 +155,12 @@ class MainWindow(QtWidgets.QMainWindow):
         
     def openOrderFile(self):
         filepath = self.openFileDialog()
+        workbook = load_workbook(filename=filepath)
         
-    def ChangeAdminPassword(self):
-        print('Password Changed')
+        for row in workbook[0].iter_rows(min_row=6, values_only=True):
+            if(row[0] is None):
+                continue
+            self.AddItemToView(amount=row[0], name=row[1])
 
     def AddItemToView(self, amount='0', unit='', name=''):
         '''Adds an item to the list.
@@ -162,10 +172,11 @@ class MainWindow(QtWidgets.QMainWindow):
         :param name: The name of the item
         :type name: string
         '''
+        totalUnits = f'{amount} {unit}'
         rowPosition = self.orderView.rowCount()
         self.orderView.insertRow(rowPosition)
-        self.orderView.setItem(rowPosition, 0, QtWidgets.QTableWidgetItem(f'{amount} {unit}'))
-        self.orderView.setItem(rowPosition, 1, QtWidgets.QTableWidgetItem(name))
+        self.orderView.setItem(rowPosition, 0, QtWidgets.QTableWidgetItem(totalUnits.strip()))
+        self.orderView.setItem(rowPosition, 1, QtWidgets.QTableWidgetItem(name.strip()))
         
     def searchTable(self):
         # self.find(self.searchInput.text().strip().upper())
@@ -355,10 +366,10 @@ class addExtraItem(QtWidgets.QDialog):
         
     def getResults(self):
         if self.exec_() == QDialog.Accepted:
-            item = []
-            item.append(self.amountInputBox.text().strip().upper())
-            item.append(self.unitInputBox.text().strip().upper())
-            item.append(self.nameInputBox.text().strip().upper())
+            item = ['0', '0', 'Empty']
+            item[0] = self.amountInputBox.text().strip().upper()
+            item[1] = self.unitInputBox.text().strip().upper()
+            item[2] = self.nameInputBox.text().strip().upper()
             return item
         else:
             return None
