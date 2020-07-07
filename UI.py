@@ -284,10 +284,13 @@ class AddItemWindow(QtWidgets.QDialog):
         if self.productList.currentItem():
             inputBox = ItemNumberInput()
             amount = inputBox.getResults()
-            self.currentItem.append(amount) 
-            self.currentItem.append(self.productList.item(self.productList.currentItem().row(), 0).text())
-            self.currentItem.append(self.productList.item(self.productList.currentItem().row(), 1).text())   
-            self.close()
+            if (amount is None):
+                self.close()
+            else:
+                self.currentItem.append(amount) 
+                self.currentItem.append(self.productList.item(self.productList.currentItem().row(), 0).text())
+                self.currentItem.append(self.productList.item(self.productList.currentItem().row(), 1).text())   
+                self.close()     
     
     def getResults(self):
         if self.exec_() == QDialog.Accepted:
@@ -330,6 +333,9 @@ class ItemNumberInput(QtWidgets.QDialog):
              
     def accepted(self):
         return super().accepted()(self)
+    
+    def rejected(self):
+        return super().rejected()
     
 class LoadingWindow(QtWidgets.QDialog):
     def __init__(self):
