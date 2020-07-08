@@ -143,6 +143,10 @@ class MainWindow(QtWidgets.QMainWindow):
             ws[f'D{index + 5}']._style = copy(ws['B3']._style)
             ws[f'E{index + 5}']._style = copy(ws['B3']._style)
         
+        try:    
+            wb.save(filepath)
+        except Exception as e:
+            QMessageBox.information(self, 'Σφάλμα!', f'Το αρχείο "{e.filename}" ειναι ήδη ανοιχτό.\nΚλείστε το αρχείο και ξαναπροσπαθήστε.')
         
     def ChangeProductList(self):
         filepath = self.openFileDialog()
