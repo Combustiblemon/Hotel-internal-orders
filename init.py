@@ -1,7 +1,10 @@
 """Doc."""
 from PyQt5 import QtWidgets
 from UI import LoadingWindow, MainWindow
-from openpyxl import Workbook, load_workbook 
+from openpyxl import Workbook, load_workbook
+from dotenv import load_dotenv
+from pathlib import Path
+import os
 import sys
 import json
 import io
@@ -10,6 +13,10 @@ import io
 app = QtWidgets.QApplication(sys.argv)
 loadingW = LoadingWindow()
 loadingW.show()
+
+# load .env file into memory
+env_path = Path('./files/data/') / '.env'
+load_dotenv(dotenv_path=env_path)
 
 # load the excel file containing all the items
 workbook = load_workbook(filename="./files/data/ProductList.xlsx")
