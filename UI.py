@@ -9,6 +9,7 @@ from openpyxl.styles import Side, Border
 from openpyxl.styles import Fill, fills, PatternFill
 from openpyxl.styles.colors import Color
 from openpyxl.cell import Cell
+from copy import copy
 
 uiparser.WidgetStack.topIsLayoutWidget = lambda self: False
 
@@ -135,10 +136,13 @@ class MainWindow(QtWidgets.QMainWindow):
         ws['E3'] = self.dateEdit.date().toString('dd/MM/yyyy')
         for index, row in enumerate(data):
             ws[f'A{index + 5}'] = row[0]
-            ws[f'A{index + 5}'].style = borderStyle
             ws[f'B{index + 5}'] = row[1]
-            ws[f'A{index + 5}'].style = borderStyle
-        wb.save(filepath)
+            ws[f'A{index + 5}']._style = copy(ws['B3']._style)
+            ws[f'B{index + 5}']._style = copy(ws['B3']._style)
+            ws[f'C{index + 5}']._style = copy(ws['B3']._style)
+            ws[f'D{index + 5}']._style = copy(ws['B3']._style)
+            ws[f'E{index + 5}']._style = copy(ws['B3']._style)
+        
         
     def ChangeProductList(self):
         filepath = self.openFileDialog()
