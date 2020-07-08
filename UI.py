@@ -159,9 +159,12 @@ class MainWindow(QtWidgets.QMainWindow):
         
     def openOrderFile(self):
         filepath = self.openFileDialog()
-        workbook = load_workbook(filename=filepath)
-        
-        for row in workbook[0].iter_rows(min_row=6, values_only=True):
+        wb = load_workbook(filename=filepath)
+        ws = wb.worksheets[0]
+        if wb is None:
+            return
+        self.orderView.setRowCount(0)
+        for row in ws.iter_rows(min_row=5, values_only=True):
             if(row[0] is None):
                 continue
             self.AddItemToView(amount=row[0], name=row[1])
