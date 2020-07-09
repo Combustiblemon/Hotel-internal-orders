@@ -1,5 +1,6 @@
 """Doc."""
 from PyQt5 import QtWidgets
+from PyQt5.QtWidgets import QMessageBox
 from UI import LoadingWindow, MainWindow
 from openpyxl import Workbook, load_workbook
 from dotenv import load_dotenv
@@ -9,17 +10,28 @@ import sys
 import json
 import io
 
-
+# Loading window
 app = QtWidgets.QApplication(sys.argv)
 loadingW = LoadingWindow()
 loadingW.show()
+correctLoad = True
 
 # load .env file into memory
-env_path = Path('./files/data/') / '.env'
-load_dotenv(dotenv_path=env_path)
+# env_path = Path('./files/data/') / '.env'
+# load_dotenv(dotenv_path=env_path)
+try:
+    with open('./files/data/data.dat', 'r') as file:
+        os.environ['ADMIN_PASSWORD'] = file.read()
+except Exception as e:
+    with open('./files/data/data.dat', 'w') as file:
+        file.write('1234')
 
 # load the excel file containing all the items
-workbook = load_workbook(filename="./files/data/ProductList.xlsx")
+try:
+    workbook = load_workbook(filename="./files/data/ProductList.xlsx")
+except Exception as e:
+    QMessageBox.information(loadingW, 'Σφάλμα!', f'Το αρχείο {e.filename} δεν υπάρχει.\nΕπικοινωνήστε με τον διαχειρηστή του συστήματος σας.\n\n{e}')
+    correctLoad = False
 
 # add all the individual sheets into one dictionary and link their data
 productList = {}
@@ -32,11 +44,16 @@ for sheet in workbook.sheetnames:
 
 # import the dictionary from the .json file
 sectionDictionary = {}
-with open('./files/data/dictionary.json', 'r', encoding="utf8") as file:
-    sectionDictionary = json.load(file)
+try:
+    with open('./files/data/dictionary.json', 'r', encoding="utf8") as file:
+        sectionDictionary = json.load(file)
+except Exception as e:
+    QMessageBox.information(loadingW, 'Σφάλμα!', f'Το αρχείο {e.filename} δεν υπάρχει.\nΕπικοινωνήστε με τον διαχειρηστή του συστήματος σας.\n\n{e}')
+    correctLoad = False
 
 # setup the application
-loadingW.close()
-window = MainWindow(sectionDictionary, productList)
-window.show()
-app.exec_() 
+if correctLoad:
+    loadingW.close()
+    window = MainWindow(sectionDictionary, productList)
+    window.show()
+    app.exec_()

@@ -6,35 +6,18 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>402</width>
+    <width>462</width>
     <height>143</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Προσθήκη Προϊόντος</string>
+   <string>Προσθήκη Νέου Προϊόντος</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="1" column="0" colspan="2">
-    <widget class="QLineEdit" name="nameInputBox">
-     <property name="placeholderText">
-      <string>Π.Χ.: Κομπόστα Ροδάκινο</string>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="1">
+   <item row="5" column="1">
     <widget class="QLineEdit" name="unitInputBox">
      <property name="placeholderText">
       <string>Π.Χ.: ΚΙΛ</string>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="1">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>
@@ -48,19 +31,12 @@
       </font>
      </property>
      <property name="text">
-      <string>'Ονομα προϊόντος:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="0">
-    <widget class="QLineEdit" name="amountInputBox">
-     <property name="placeholderText">
-      <string>Π.Χ.: 15</string>
+      <string>Περιγραφή Προϊόντος:</string>
      </property>
     </widget>
    </item>
    <item row="3" column="0">
-    <widget class="QLabel" name="amountLabel">
+    <widget class="QLabel" name="codeLabel">
      <property name="font">
       <font>
        <family>Calibri</family>
@@ -70,9 +46,26 @@
       </font>
      </property>
      <property name="text">
-      <string>Ποσότητα Προϊόντος:</string>
+      <string>Κωδικός Προϊόντος:</string>
      </property>
     </widget>
+   </item>
+   <item row="1" column="0" colspan="3">
+    <widget class="QLineEdit" name="nameInputBox">
+     <property name="placeholderText">
+      <string>Π.Χ.: ΚΑΛΑΜΑΡΙ ΘΡΑΨΑΛΟ ΦΙΛΕΤΟ ΧΥΜΑ ΚΤΨ 87/61</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0">
+    <widget class="QLineEdit" name="codeInputBox">
+     <property name="placeholderText">
+      <string>Π.Χ.: 03-052-475-0056</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="2">
+    <widget class="QComboBox" name="sectionSelector"/>
    </item>
    <item row="3" column="1">
     <widget class="QLabel" name="unitInputLabel">
@@ -84,7 +77,31 @@
       </font>
      </property>
      <property name="text">
-      <string>Μονάδα Μέτρησης: </string>
+      <string>Μονάδα Μέτρησης:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="2">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="2">
+    <widget class="QLabel" name="sectionLabel">
+     <property name="font">
+      <font>
+       <family>Calibri</family>
+       <pointsize>12</pointsize>
+       <underline>true</underline>
+      </font>
+     </property>
+     <property name="text">
+      <string>Τμήμα:</string>
      </property>
     </widget>
    </item>
@@ -92,7 +109,7 @@
  </widget>
  <tabstops>
   <tabstop>nameInputBox</tabstop>
-  <tabstop>amountInputBox</tabstop>
+  <tabstop>codeInputBox</tabstop>
   <tabstop>unitInputBox</tabstop>
  </tabstops>
  <resources/>

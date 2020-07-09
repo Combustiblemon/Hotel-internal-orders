@@ -1,5 +1,5 @@
 
-from PyQt5 import QtWidgets, QtCore, uic
+from PyQt5 import Qt, QtWidgets, QtCore, uic
 from PyQt5.QtWidgets import QLabel, QDialog, QMessageBox, QMainWindow, QWidget, QPushButton, QAction, QInputDialog, QLineEdit, QFileDialog
 from PyQt5.QtGui import QIcon
 from PyQt5.uic import uiparser
@@ -10,6 +10,7 @@ from openpyxl.styles import Fill, fills, PatternFill
 from openpyxl.styles.colors import Color
 from openpyxl.cell import Cell
 from copy import copy
+import os
 
 uiparser.WidgetStack.topIsLayoutWidget = lambda self: False
 
@@ -31,17 +32,17 @@ class MainWindow(QtWidgets.QMainWindow):
         uic.loadUi('./files/UI/mainWindow.ui', self)
         self.sectionDictionary = sectionDictionary
         self.productDictionary = productDictionary
-        sectionList = []
+        self.sectionList = []
         self.text = ''
         self.items = []
         self.index = 0
         for k in sectionDictionary.items():
-            sectionList.append(k[0])
-        self.ConnectLogicToObjects(sectionList)
+            self.sectionList.append(k[0])
+        self.ConnectLogicToObjects()
         self.show()
 
     # Adding pointers to all the objects of the UI
-    def ConnectLogicToObjects(self, sectionList):
+    def ConnectLogicToObjects(self):
         self.orderView = self.findChild(QtWidgets.QTableWidget, 'orderView')
         self.SetTableStyle()
         # self.AddItemToView('15', 'kg', 'Πόλπα ντομάτα')
@@ -67,11 +68,11 @@ class MainWindow(QtWidgets.QMainWindow):
         
         self.fromSelectorBox = self.findChild(QtWidgets.QComboBox, 'fromSelector')
         self.fromSelectorBox.clear()
-        self.fromSelectorBox.addItems(sectionList)
+        self.fromSelectorBox.addItems(self.sectionList)
         
         self.toSelectorBox = self.findChild(QtWidgets.QComboBox, 'toSelector')
         self.toSelectorBox.clear()
-        self.toSelectorBox.addItems(sectionList)
+        self.toSelectorBox.addItems(self.sectionList)
         
         self.searchInput = self.findChild(QtWidgets.QLineEdit, 'searchInput')
         
@@ -81,7 +82,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.menuBar = self.findChild(QtWidgets.QMenuBar, 'menubar')
         self.menu = self.findChild(QtWidgets.QMenu, 'menu')
         self.adminMenu = self.findChild(QtWidgets.QMenu, 'administrator')
-        self.changeProducts = self.findChild(QtWidgets.QAction, 'changeProducts')
+        self.adminTools = self.findChild(QtWidgets.QAction, 'adminTools')
         self.menuExitOption = self.findChild(QtWidgets.QAction, 'exit')
         self.openOrder = self.findChild(QtWidgets.QAction, 'openOrder')
         self.SetUpMenuBar()
@@ -92,10 +93,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.menuExitOption.setStatusTip('Έξοδος προγράμματος')
         self.menuExitOption.triggered.connect(self.exitCall)
         
-        # setup change products option
-        self.changeProducts.setShortcut('Ctrl+E')
-        self.changeProducts.setStatusTip('Αλλαγή λίστας προϊόντων')
-        self.changeProducts.triggered.connect(self.ChangeProductList)
+        # setup admin tools option
+        self.adminTools.setShortcut('Ctrl+E')
+        self.adminTools.setStatusTip('Εργαλεία Διαχειριστή')
+        self.adminTools.triggered.connect(self.adminToolsPressed)
         
         # setup open order option
         self.openOrder.setShortcut('Ctrl+R')
@@ -128,7 +129,10 @@ class MainWindow(QtWidgets.QMainWindow):
         if filepath is None:
             return
         data = self.getTableData()
-        wb = load_workbook(filename="./files/data/Template.xlsx")
+        try:
+            wb = load_workbook(filename="./files/data/Template.xlsx")
+        except Exception as e:
+            QMessageBox.information(self, 'Σφάλμα!', f'Το αρχείο "{e.filename}" δεν υπάρχει.\nΚλείστε το αρχείο και ξαναπροσπαθήστε.\n\n{e}')
         ws = wb.worksheets[0]
         
         ws['B2'] = self.fromSelectorBox.currentText()
@@ -146,13 +150,15 @@ class MainWindow(QtWidgets.QMainWindow):
         try:    
             wb.save(filepath)
         except Exception as e:
-            QMessageBox.information(self, 'Σφάλμα!', f'Το αρχείο "{e.filename}" ειναι ήδη ανοιχτό.\nΚλείστε το αρχείο και ξαναπροσπαθήστε.')
-        
-    def ChangeProductList(self):
-        filepath = self.openFileDialog()
-        if(filepath):
-            dest = './files/data/ProductList.xlsx'
-            copyfile(filepath, dest)
+            QMessageBox.information(self, 'Σφάλμα!', f'Το αρχείο "{e.filename}" ειναι ήδη ανοιχτό.\nΚλείστε το αρχείο και ξαναπροσπαθήστε.\n\n{e}')
+    
+    def adminToolsPressed(self):
+        password = PasswordInputWindow().getData()
+        if password == os.getenv('ADMIN_PASSWORD'):
+            window = adminTools(self.sectionList, self.sectionDictionary)
+            window.exec_()
+        else:
+            QMessageBox.information(self, 'Προσοχή', 'Εσφαλμένος κωδικός')  
             
     def DeleteItemPressed(self):
         rowPosition = self.orderView.rowCount()
@@ -172,6 +178,7 @@ class MainWindow(QtWidgets.QMainWindow):
             if(row[0] is None):
                 continue
             self.AddItemToView(amount=row[0], name=row[1])
+        self.productList.sortItems(1, order=QtCore.Qt.AscendingOrder)
 
     def AddItemToView(self, amount='0', unit='', name=''):
         '''Adds an item to the list.
@@ -272,6 +279,7 @@ class AddItemWindow(QtWidgets.QDialog):
         
         for i in range(len(productDictionary)):
             self.AddItemToView(productDictionary[i][2], productDictionary[i][1])
+        self.productList.sortItems(1, order=QtCore.Qt.AscendingOrder)
             
     def SetTableStyle(self):
         header = self.productList.horizontalHeader()
@@ -317,8 +325,8 @@ class AddItemWindow(QtWidgets.QDialog):
             else:
                 self.currentItem.append(amount) 
                 self.currentItem.append(self.productList.item(self.productList.currentItem().row(), 0).text())
-                self.currentItem.append(self.productList.item(self.productList.currentItem().row(), 1).text())    
-    
+                self.currentItem.append(self.productList.item(self.productList.currentItem().row(), 1).text())
+                
     def getResults(self):
         if self.exec_() == QDialog.Accepted:
             item = self.currentItem
@@ -384,7 +392,149 @@ class addExtraItem(QtWidgets.QDialog):
             return item
         else:
             return None
+        
+class adminTools(QtWidgets.QDialog):
+    def __init__(self, sectionList, sectionDictionary):
+        super(adminTools, self).__init__()
+        # Load the main UI file
+        uic.loadUi('./files/UI/adminTools.ui', self)
+        self.sectionList = sectionList
+        self.sectionDictionary = sectionDictionary
+        self.ConnectLogicToObjects()
+        
+    def ConnectLogicToObjects(self):
+        self.changeProductList = self.findChild(QtWidgets.QPushButton, 'changeProductList')
+        self.changeProductList.clicked.connect(self.changeProductListClicked)
     
+        self.addSingleItem = self.findChild(QtWidgets.QPushButton, 'addSingleItem')
+        self.addSingleItem.clicked.connect(self.addSingleItemClicked)
+        
+        self.adminPasswordChange = self.findChild(QtWidgets.QPushButton, 'adminPasswordChange')
+        self.adminPasswordChange.clicked.connect(self.adminPasswordChangeClicked)
+        
+    def changeProductListClicked(self):
+        filepath = self.openFileDialog()
+        if(filepath):
+            dest = './files/data/ProductList.xlsx'
+            try:    
+                copyfile(filepath, dest)
+            except Exception as e:
+                QMessageBox.information(self, 'Σφάλμα!', f'Το αρχείο "{e.filename}" ειναι ήδη ανοιχτό.\nΚλείστε το αρχείο και ξαναπροσπαθήστε.\n\n{e}')
+                
+    def addSingleItemClicked(self):
+        dialog = addExtraItemToData(self.sectionList, self.sectionDictionary)
+        item = dialog.getData()
+        if item:
+            try:
+                wb = load_workbook(filename="./files/data/ProductList.xlsx")
+            except Exception as e:
+                QMessageBox.information(self, 'Σφάλμα!', f'Το αρχείο "{e.filename}" ειναι ήδη ανοιχτό.\nΕπικοινωνήστε με τον διαχειρηστή του συστήματος σας.\n\n{e}')
+            
+            # add item to total view
+            ws = wb.worksheets[0]
+            ws.append([item[0], item[1], item[2]])
+            
+            # add the item to the section worksheet
+            if (self.sectionDictionary[item[3]] != wb.sheetnames[0]):
+                ws = wb[self.sectionDictionary[item[3]]]
+                ws.append([item[0], item[1], item[2]])
+            
+            try:
+                wb.save('./files/data/ProductList.xlsx')
+            except Exception as e:
+                QMessageBox.information(self, 'Σφάλμα!', f'Το αρχείο "{e.filename}" δεν μπορούσε να αποθηκευτεί.\nΕπικοινωνήστε με τον διαχειρηστή του συστήματος σας.\n\n{e}')               
+    
+    def adminPasswordChangeClicked(self):
+        dialog = PasswordInputWindow('Εισαγωγή νέου κωδικού Διαχειριστή:')
+        password = dialog.getData()
+        if password:
+            os.environ["ADMIN_PASSWORD"] = password
+            try:
+                with open('./files/data/data.dat', 'w') as file:
+                    file.write(password)
+                QMessageBox.information(self, '', 'Ο κωδικός αλλαξε επιτυχώς.')
+            except Exception as e:
+                QMessageBox.information(self, 'Σφάλμα!', f'Ο κωδικός δεν μπόρεσε να αλλαχθεί. Προσπαθήστε ξανά.\n\n {e}')
+        elif password == 'PASSWORD REJECTED':
+            return
+        else:
+            QMessageBox.information(self, 'Σφάλμα!', 'Ο κωδικός δεν μπόρεσε να αλλαχθεί. Προσπαθήστε ξανά.')
+    
+    def openFileDialog(self, filetypes="Excel Files (*.xlsx);;All Files (*)"):
+        options = QFileDialog.Options()
+        fileName, _ = QFileDialog.getOpenFileName(self, "Άνοιγμα λίστας", "", "Excel Files (*.xlsx);;All Files (*)", options=options)
+        if fileName:
+            return fileName
+            
+        
+class addExtraItemToData(QtWidgets.QDialog):
+    def __init__(self, sectionList, sectionDictionary):
+        super(addExtraItemToData, self).__init__()
+        # Load the main UI file
+        uic.loadUi('./files/UI/addExtraItemToData.ui', self)
+        self.sectionDictionary = sectionDictionary
+        self.sectionList = sectionList
+        self.ConnectLogicToObjects()
+        
+    def ConnectLogicToObjects(self):
+        self.nameInputBox = self.findChild(QtWidgets.QLineEdit, 'nameInputBox')
+        self.codeInputBox = self.findChild(QtWidgets.QLineEdit, 'codeInputBox')
+        self.unitInputBox = self.findChild(QtWidgets.QLineEdit, 'unitInputBox')
+        
+        self.codeLabel = self.findChild(QtWidgets.QLabel, 'codeLabel')
+        self.nameLabel = self.findChild(QtWidgets.QLabel, 'nameLabel')
+        self.unitInputLabel = self.findChild(QtWidgets.QLabel, 'unitInputLabel')
+        self.sectionLabel = self.findChild(QtWidgets.QLabel, 'sectionLabel')
+        
+        self.sectionSelector = self.findChild(QtWidgets.QComboBox, 'sectionSelector')
+        self.sectionSelector.clear()
+        self.sectionSelector.addItems(self.sectionList)
+        
+    def getData(self):
+        '''Returns the new item in an array
+        
+        [0] the code of the item as input by the user
+        
+        [1] the name of the item as input by the user
+        
+        [2] the unit of the item as input by the user
+        
+        [3] the section of the item as input by the user
+        '''
+        if self.exec_() == QDialog.Accepted:
+            item = []
+            item.append(self.codeInputBox.text().strip())
+            item.append(self.nameInputBox.text().strip())
+            item.append(self.unitInputBox.text().strip())
+            item.append(self.sectionSelector.currentText())
+            return(item)
+        else:
+            return None
+        
+class PasswordInputWindow(QtWidgets.QDialog):
+    def __init__(self, text='Κωδικός Διαχειριστή:'):
+        super(PasswordInputWindow, self).__init__()
+        # Load the main UI file
+        uic.loadUi('./files/UI/passwordInput.ui', self)
+        self.ConnectLogicToObjects(text)
+    
+    def ConnectLogicToObjects(self, text):
+        self.label = self.findChild(QtWidgets.QLabel, 'label')
+        self.label.setText(text)
+        self.passwordInput = self.findChild(QtWidgets.QLineEdit, 'passwordInput')
+        
+    def getData(self):
+        if self.exec_() == QDialog.Accepted:
+            return self.passwordInput.text()
+        elif self.exec_() == QDialog.Rejected:
+            return 'PASSWORD REJECTED'
+        else:
+            return None
+    
+    def closeEvent(self, event):
+        self.close()
+    
+        
 class LoadingWindow(QtWidgets.QDialog):
     def __init__(self):
         super(LoadingWindow, self).__init__()

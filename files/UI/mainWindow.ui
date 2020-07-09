@@ -273,7 +273,7 @@
      <property name="title">
       <string>Διαχειριστής</string>
      </property>
-     <addaction name="changeProducts"/>
+     <addaction name="adminTools"/>
     </widget>
     <addaction name="administrator"/>
     <addaction name="openOrder"/>
@@ -283,14 +283,9 @@
    <addaction name="menu"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
-  <action name="changeProducts">
+  <action name="adminTools">
    <property name="text">
-    <string>Αλλαγή Λίστας Προϊόντων</string>
-   </property>
-  </action>
-  <action name="action_4">
-   <property name="text">
-    <string>Αλλαγή Κωδικού</string>
+    <string>Εργαλεία Διαχειριστή</string>
    </property>
   </action>
   <action name="adminPasswordChange">
