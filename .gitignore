@@ -1,6 +1,7 @@
 __pycache__/
 build/
 dist/
+build_env/
 init.spec
-init.exe
 .~lock.*
+*.exe
