@@ -36,6 +36,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.text = ''
         self.items = []
         self.index = 0
+        
+        # create the sectionList from the sectionDictionary
         for k in sectionDictionary.items():
             self.sectionList.append(k[0])
         self.ConnectLogicToObjects()
@@ -115,8 +117,12 @@ class MainWindow(QtWidgets.QMainWindow):
         self.orderView.setRowCount(0)
 
     def AddItemPressed(self):
+        # get the To section from the selection
         selectedSectionTo = str(self.toSelectorBox.currentText())
+        
+        # open the addItemWindow for the user to select the item
         dialog = AddItemWindow(self.productDictionary[self.sectionDictionary[selectedSectionTo]], selectedSectionTo)
+        # get the item selected
         item = dialog.getResults()
         dialog.close()
         if(item is None):
@@ -125,34 +131,48 @@ class MainWindow(QtWidgets.QMainWindow):
             self.AddItemToView(item[0], item[1], item[2])
 
     def CreateOrderPressed(self):
+        # get the filepath to save the order
         filepath = self.saveFileDialog()
         if filepath is None:
             return
+        
+        # get the table data of the main window
         data = self.getTableData()
         try:
+            # load the template
             wb = load_workbook(filename="./files/data/Template.xlsx")
         except Exception as e:
-            QMessageBox.information(self, 'Σφάλμα!', f'Το αρχείο "{e.filename}" δεν υπάρχει.\nΚλείστε το αρχείο και ξαναπροσπαθήστε.\n\n{e}')
+            QMessageBox.information(self, 'Σφάλμα!', f'Το αρχείο "{e.filename}" δεν υπάρχει.\nΕπικοινωνήστε με τον διαχειρηστή του συστήματος σας.\n\n{e}')
         ws = wb.worksheets[0]
         
+        # write the From section to the template
         ws['B2'] = self.fromSelectorBox.currentText()
+        
+        # write the To section to the template
         ws['D2'] = self.toSelectorBox.currentText()
+        
+        # write the selected date to the template
         ws['E3'] = self.dateEdit.date().toString('dd/MM/yyyy')
         for index, row in enumerate(data):
+            # add the data to the template
             ws[f'A{index + 5}'] = row[0]
             ws[f'B{index + 5}'] = row[1]
+            
+            # style the cells
             ws[f'A{index + 5}']._style = copy(ws['B3']._style)
             ws[f'B{index + 5}']._style = copy(ws['B3']._style)
             ws[f'C{index + 5}']._style = copy(ws['B3']._style)
             ws[f'D{index + 5}']._style = copy(ws['B3']._style)
             ws[f'E{index + 5}']._style = copy(ws['B3']._style)
         
-        try:    
+        try: 
+            # save the template as an order to the filepath specified   
             wb.save(filepath)
         except Exception as e:
             QMessageBox.information(self, 'Σφάλμα!', f'Το αρχείο "{e.filename}" ειναι ήδη ανοιχτό.\nΚλείστε το αρχείο και ξαναπροσπαθήστε.\n\n{e}')
     
     def adminToolsPressed(self):
+        # ask for a password
         password = PasswordInputWindow().getData()
         if password == os.getenv('ADMIN_PASSWORD'):
             window = adminTools(self.sectionList, self.sectionDictionary)
@@ -161,24 +181,42 @@ class MainWindow(QtWidgets.QMainWindow):
             QMessageBox.information(self, 'Προσοχή', 'Εσφαλμένος κωδικός')  
             
     def DeleteItemPressed(self):
-        rowPosition = self.orderView.rowCount()
-        self.orderView.removeRow(rowPosition - 1)
+        # get currently selected item
+        rowPosition = self.orderView.currentRow()
+        # delete the item
+        self.orderView.removeRow(rowPosition)
         
     def exitCall(self):
         self.close()  
         
     def openOrderFile(self):
+        # get the filepath of the order to be opened
         filepath = self.openFileDialog()
+        
+        #if tehre is no filepath return
+        if filepath is None:
+            return
+        
+        # load the excel from the filepath
         wb = load_workbook(filename=filepath)
-        ws = wb.worksheets[0]
+        
+        # if nothing was loaded return
         if wb is None:
             return
+        # select the first sheet
+        ws = wb.worksheets[0]
+        
+        # clear the table in the Main Window
         self.orderView.setRowCount(0)
+        
+        # add items from the file to view
         for row in ws.iter_rows(min_row=5, values_only=True):
+            # if the row is empty ignore it
             if(row[0] is None):
                 continue
             self.AddItemToView(amount=row[0], name=row[1])
-        self.productList.sortItems(1, order=QtCore.Qt.AscendingOrder)
+        # sort the added items
+        self.orderView.sortItems(1, order=QtCore.Qt.AscendingOrder)
 
     def AddItemToView(self, amount='0', unit='', name=''):
         '''Adds an item to the list.
@@ -191,31 +229,46 @@ class MainWindow(QtWidgets.QMainWindow):
         :type name: string
         '''
         totalUnits = f'{amount} {unit}'
+        
+        # get current row
         rowPosition = self.orderView.rowCount()
+        
+        # add a new row at the end of the table 
         self.orderView.insertRow(rowPosition)
+        
+        # populate the row
         self.orderView.setItem(rowPosition, 0, QtWidgets.QTableWidgetItem(totalUnits.strip()))
         self.orderView.setItem(rowPosition, 1, QtWidgets.QTableWidgetItem(name.strip()))
         
     def searchTable(self):
-        # self.find(self.searchInput.text().strip().upper())
+        # if the text in the search bar is not the same as self.text update self.text with the new text
         if (self.text != self.searchInput.text().strip().upper()):
             self.text = self.searchInput.text().strip().upper()
+            # find all the items containing self.text and add them to self.items
             self.items = self.orderView.findItems(self.text, QtCore.Qt.MatchContains)
+            # set self.index to 0
             self.index = 0
         else:
+            # if the index is less than the amount of items, increment it by one to get the next item
+            # otherwise set it back to 0
             if(self.index < len(self.items) - 1):
                 self.index += 1
             else:
                 self.index = 0
         if self.items:
-            self.orderView.selectRow(self.items[self.index].row())
+            # select the next item found from the search
+            self.orderView.setCurrentItem(self.items[self.index])
         else:
+            # if nothing was found and the searchbar wasn't empty display message
             if(self.text != ''):
                 QMessageBox.information(self, 'Αναζήτηση', f'Δεν βρέθηκε το προϊόν με το ονομα "{self.searchInput.text().strip()}"')
     
     def getTableData(self):
+        # create model from orderView
         model = self.orderView.model()
         data = []
+        
+        # add all the contents of the model to data[]
         for row in range(model.rowCount()):
             data.append([])
             for column in range(model.columnCount()):
@@ -223,26 +276,30 @@ class MainWindow(QtWidgets.QMainWindow):
                 # We suppose data are strings
                 data[row].append(str(model.data(index)))
         return data
-        
+    
+    # opens the save file dialog and returns the path to the file to be saved as selected by the user
     def saveFileDialog(self, filetypes="Excel Files (*.xlsx);;All Files (*)"):
         options = QFileDialog.Options()
         fileName, _ = QFileDialog.getSaveFileName(self, "Αποθήκευση παραγγελίας", "", filetypes, options=options)
         if fileName:
             return fileName
-            
+    
+    # opens the open file dialog and returns   teh path to the file to be opened as selected by the user    
     def openFileDialog(self, filetypes="Excel Files (*.xlsx);;All Files (*)"):
         options = QFileDialog.Options()
         fileName, _ = QFileDialog.getOpenFileName(self, "Άνοιγμα λίστας", "", "Excel Files (*.xlsx);;All Files (*)", options=options)
         if fileName:
             return fileName
     
+    # before the main window closes open a message asking the user if they want to exit 
     def closeEvent(self, event):
         close = QMessageBox()
-        close.setWindowTitle('Exit')
-        close.setText("Are you sure you want to exit?")
+        close.setWindowTitle('Έξοδος')
+        close.setText("Θέλετε να κλείσετε το πρόγραμμα;")
         close.setStandardButtons(QMessageBox.Yes | QMessageBox.Cancel)
         close = close.exec()
 
+        # if the user accepts close the window otherwise ignore the close order
         if close == QMessageBox.Yes:
             event.accept()
         else:
@@ -277,8 +334,10 @@ class AddItemWindow(QtWidgets.QDialog):
         self.productList = self.findChild(QtWidgets.QTableWidget, 'productList')
         self.SetTableStyle()
         
+        # adds the items from the selected section to view
         for i in range(len(productDictionary)):
             self.AddItemToView(productDictionary[i][2], productDictionary[i][1])
+        # sort the item view
         self.productList.sortItems(1, order=QtCore.Qt.AscendingOrder)
             
     def SetTableStyle(self):
@@ -286,27 +345,38 @@ class AddItemWindow(QtWidgets.QDialog):
         header.setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
         
     def searchTable(self):
-        # self.find(self.searchInput.text().strip().upper())
+        # if the text in the search bar is not the same as self.text update self.text with the new text
         if (self.text != self.searchInput.text().strip().upper()):
             self.text = self.searchInput.text().strip().upper()
+            # find all the items containing self.text and add them to self.items
             self.items = self.productList.findItems(self.text, QtCore.Qt.MatchContains)
+            # set self.index to 0
             self.index = 0
         else:
+            # if the index is less than the amount of items, increment it by one to get the next item
+            # otherwise set it back to 0
             if(self.index < len(self.items) - 1):
                 self.index += 1
             else:
                 self.index = 0
         if self.items:
+            # select the next item found from the search
             self.productList.selectRow(self.items[self.index].row())
         else:
+            # if nothing was found and the searchbar wasn't empty display message
             if(self.text != ''):
                 QMessageBox.information(self, 'Αναζήτηση', f'Δεν βρέθηκε το προϊόν με το ονομα "{self.searchInput.text().strip()}"')        
                 
     def manualAddItemPressed(self):
+        # clear memory before continuing
         self.currentItem = []
+        
+        # open an input box and get the data input by the user
         inputBox = addExtraItem()
         amount = inputBox.getResults()
         inputBox.close()
+        
+        # if nothing was input close the window, else add the data to self.currentItems
         if (amount is None):
             self.close()
         else:
@@ -315,11 +385,17 @@ class AddItemWindow(QtWidgets.QDialog):
             self.currentItem.append(amount[2])
             
     def AddButtonPressed(self):
+        # clear memory before continuing
         self.currentItem = []
+        
+        # if there is an item selected proceed
         if self.productList.currentItem():
+            # open an ItemNumberInput window and get the data input by the user
             inputBox = ItemNumberInput()
             amount = inputBox.getResults()
             inputBox.close()
+            
+            #if nothing was inputed close the window else add the data to self.currentItem
             if (amount is None):
                 self.close()
             else:
@@ -328,9 +404,9 @@ class AddItemWindow(QtWidgets.QDialog):
                 self.currentItem.append(self.productList.item(self.productList.currentItem().row(), 1).text())
                 
     def getResults(self):
+        # return self.currentItem
         if self.exec_() == QDialog.Accepted:
-            item = self.currentItem
-            return item
+            return self.currentItem
         else:
             return None
     
@@ -344,8 +420,13 @@ class AddItemWindow(QtWidgets.QDialog):
         :param name: The name of the item
         :type name: string
         '''
+        # get current row
         rowPosition = self.productList.rowCount()
+        
+        # add a new row at the end of the table
         self.productList.insertRow(rowPosition)
+        
+        # populate the row
         self.productList.setItem(rowPosition, 0, QtWidgets.QTableWidgetItem(f'{unit}'))
         self.productList.setItem(rowPosition, 1, QtWidgets.QTableWidgetItem(name))
 
@@ -413,19 +494,23 @@ class adminTools(QtWidgets.QDialog):
         self.adminPasswordChange.clicked.connect(self.adminPasswordChangeClicked)
         
     def changeProductListClicked(self):
+        # get the filepath to the new productList as input by the user
         filepath = self.openFileDialog()
         if(filepath):
             dest = './files/data/ProductList.xlsx'
-            try:    
+            try:
+                # replace the product list with the new file    
                 copyfile(filepath, dest)
             except Exception as e:
                 QMessageBox.information(self, 'Σφάλμα!', f'Το αρχείο "{e.filename}" ειναι ήδη ανοιχτό.\nΚλείστε το αρχείο και ξαναπροσπαθήστε.\n\n{e}')
                 
     def addSingleItemClicked(self):
-        dialog = addExtraItemToData(self.sectionList, self.sectionDictionary)
+        # open an AddExtraItemToData window and get the data input by the user
+        dialog = AddExtraItemToData(self.sectionList, self.sectionDictionary)
         item = dialog.getData()
         if item:
             try:
+                # load the ProductList
                 wb = load_workbook(filename="./files/data/ProductList.xlsx")
             except Exception as e:
                 QMessageBox.information(self, 'Σφάλμα!', f'Το αρχείο "{e.filename}" ειναι ήδη ανοιχτό.\nΕπικοινωνήστε με τον διαχειρηστή του συστήματος σας.\n\n{e}')
@@ -440,16 +525,19 @@ class adminTools(QtWidgets.QDialog):
                 ws.append([item[0], item[1], item[2]])
             
             try:
+                # save ProductList
                 wb.save('./files/data/ProductList.xlsx')
             except Exception as e:
                 QMessageBox.information(self, 'Σφάλμα!', f'Το αρχείο "{e.filename}" δεν μπορούσε να αποθηκευτεί.\nΕπικοινωνήστε με τον διαχειρηστή του συστήματος σας.\n\n{e}')               
     
     def adminPasswordChangeClicked(self):
+        # open a PasswordInputWindow and get the new password as input by the user
         dialog = PasswordInputWindow('Εισαγωγή νέου κωδικού Διαχειριστή:')
         password = dialog.getData()
         if password:
             os.environ["ADMIN_PASSWORD"] = password
             try:
+                # write the password to data.dat
                 with open('./files/data/data.dat', 'w') as file:
                     file.write(password)
                 QMessageBox.information(self, '', 'Ο κωδικός αλλαξε επιτυχώς.')
@@ -460,6 +548,7 @@ class adminTools(QtWidgets.QDialog):
         else:
             QMessageBox.information(self, 'Σφάλμα!', 'Ο κωδικός δεν μπόρεσε να αλλαχθεί. Προσπαθήστε ξανά.')
     
+    # opens the open file dialog and returns   teh path to the file to be opened as selected by the user   
     def openFileDialog(self, filetypes="Excel Files (*.xlsx);;All Files (*)"):
         options = QFileDialog.Options()
         fileName, _ = QFileDialog.getOpenFileName(self, "Άνοιγμα λίστας", "", "Excel Files (*.xlsx);;All Files (*)", options=options)
@@ -467,9 +556,9 @@ class adminTools(QtWidgets.QDialog):
             return fileName
             
         
-class addExtraItemToData(QtWidgets.QDialog):
+class AddExtraItemToData(QtWidgets.QDialog):
     def __init__(self, sectionList, sectionDictionary):
-        super(addExtraItemToData, self).__init__()
+        super(AddExtraItemToData, self).__init__()
         # Load the main UI file
         uic.loadUi('./files/UI/addExtraItemToData.ui', self)
         self.sectionDictionary = sectionDictionary

@@ -16,9 +16,7 @@ loadingW = LoadingWindow()
 loadingW.show()
 correctLoad = True
 
-# load .env file into memory
-# env_path = Path('./files/data/') / '.env'
-# load_dotenv(dotenv_path=env_path)
+# Open data.dat file and get the password
 try:
     with open('./files/data/data.dat', 'r') as file:
         os.environ['ADMIN_PASSWORD'] = file.read()
